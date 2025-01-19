@@ -1,7 +1,7 @@
 ## 참고자료
 * https://ydeer.tistory.com/143  
 * https://velog.io/@adencho/%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0-Chapter4  
-
+* [프로세스와 레지스터 (Program Counter, Stack Pointer)](https://velog.io/@wejaan/%EC%9A%B4%EC%98%81%EC%B2%B4%EC%A0%9C-stack-pointer-and-program-counter)
 
 ## 1. Introduction
 
@@ -37,6 +37,7 @@
 ## 2. Instruction Execution (Instruction 실행)
 * 프로그램이 메모리에 로드되면 instruction들은 instruction 메모리 영역에 순서대로 주소를 가지며 위치함
 * PC(Program Counter): 현재 실행하는 명령어의 주소를 가지며(정확히는 다음 명령어 주소를 가리킴)
+    * 즉, PC는 **메모리에서 실행할 다음 명령어의 주소를 저장하는 레지스터**
     * Target Address 혹은 PC+4 값이 저장됨
     * Fetch Instruction: PC에 담긴 주소로 instruction 메모리에서 instruction을 읽어오는 것
 * 레지스터 번호 <-> 레지스터 뭉치
