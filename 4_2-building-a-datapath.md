@@ -32,6 +32,7 @@
 * rd는 Write register에 입력
 
 ### Instruction 수행 결과가 Registers로 향하기까지 과정
+![R-format_instructions_datapath](./R-format_instructions_datapath_overview.png)
 * 맨 처음에 PC에서 입력되는 메모리 주소에 해당하는 Instruction을 Instruction 메모리에서 읽어오게 됨
 * R 타입 같은 경우 rs와 rt 값으로 계산된 값이 rd(Register 주소값)에 저장되는 것임
 * rd(Register 주소값)에 저장해야 하므로 ALU result는 메인메모리를 통과하지 않고 MUX로 향함
@@ -43,8 +44,8 @@
     * Control 유닛이 Branch 값을 0을 주면, Mux로 입력될 And 게이트의 출력 값도 0이 됨
 * MUX에서 출력되는 PC+4의 값이 PC로 입력되게 됨 (PC = PC+4)
 
-## 4. Load/Store Instructions
-### 예시 I-format Instruction: lw
+## 4. Load/Store(I-Format) Instructions
+### 예시) I-format Load Instruction: lw
 * lw(load word) 명령어를 예시로 생각해보자
     * 아래 명령어: $s4주소로부터 12만큼 떨어진 주소에 있는 값을 **$t 레지스터에 저장** (메모리에 있는 값을 레지스터에 저장)
         ~~~
@@ -63,6 +64,7 @@
 * address는 Sign-extend에 입력됨 (address 값이 쪼개지면 의미가 없으며, 뭉탱이로 있어야 유의미)
 
 ### Instruction 수행 결과가 Registers로 향하기까지 과정
+![I-format_instructions_datapath](./R-format_instructions_datapath_overview.png)
 * 맨 처음에 PC에서 입력되는 메모리 주소에 해당하는 Instruction을 Instruction 메모리에서 읽어오게 됨
 * rs는 Registers를 통과하여 rs에 해당하는 값이 ALU로 입력됨
 * address는 Sign-extend를 거쳐 32비트로 확장된 주소값이 Mux를 거쳐 ALU로 입력됨
@@ -70,4 +72,14 @@
 * ALU result 값(연산을 거친 주소값)은 Data Memory에 입력되며, 주소값에 해당하는 값을 Read data로 출력됨
 * Read data로 출력된 값은 Mux를 거쳐 Registers의 Write data로 향함
 
-## 5. Branch Instructions 
+## 5. Branch(J-Format) Instructions
+
+### Instruction 수행 결과가 Registers로 향하기까지 과정
+![I-format_instructions_datapath](./I-format_instructions_datapath_overview.png)
+* 맨 처음에 PC에서 입력되는 메모리 주소에 해당하는 Instruction을 Instruction 메모리에서 읽어오게 됨
+* address는 Shift left 2 유닛으로 향함
+* Shift left 2 유닛에 의해 4를 곱하게 됨
+* PC에 4가 더한 값의 MSB(Most Significant Bit, 최상위 비트)인 4 bits와 address에 Shift left 2를 적용한 28 bits가 합쳐져서 32 bits가 됨
+* PC의 값은 위에서 합쳐진 새로운 32 bits로 업데이트 됨
+* op는 Control 유닛으로 향함
+* Control 유닛은 PC를 업데이트 하는 것 외의 요소들은 사용할 필요가 없게끔 신호를 출력
