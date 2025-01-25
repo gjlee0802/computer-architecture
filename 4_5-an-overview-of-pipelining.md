@@ -67,8 +67,8 @@ Pipelining 방법론의 목적: 병렬처리로 성능 향상을 기대하는 �
     * 예측: Instruction 결과 예측이 틀린다면 다시 수행해야한다는 위험
         * 대부분의 컴퓨터가 분기 명령어를 다루기 위해 **예측**을 사용함
     * **지연 결정**: 분기 명령어에 의해 영향받지 않는 명령어를 지연 분기 명령어 바로 다음에 옮겨 놓으며, 분기 명령어는 이 안전한 명령어 이동을 고려하여 분기 주소를 변경
-        * 분기 명령어가 실행되면, 프로세서는 분기된 **목적 주소(Target)**로 이동해야 하지만, 지연 슬롯에 넣은 명령어를 먼저 실행해야 함
-        * 이를 위해 **분기 주소(Target)**를 원래 목표 주소보다 한 단계 뒤로 조정
+        * 분기 명령어가 실행되면, 프로세서는 분기된 **목적 주소(Target)로** 이동해야 하지만, 지연 슬롯에 넣은 명령어를 먼저 실행해야 함
+        * 이를 위해 **분기 주소(Target)를** 원래 목표 주소보다 한 단계 뒤로 조정
 
 ## 7. Structure Hazards
 * 하드웨어 자원을 이용하는 것에서 충돌
@@ -171,8 +171,8 @@ A[4] = A[0] + A[2];
         * Stall로 인한 불이익이 커질 수 있음
     * Branch 결과를 예측
         * 만약 예측이 틀렸을 경우에만 Stall이 발생
-    * MIPS Pipeline에서,
-        * Branch 결과를 **일어나지 않은 것으로 예측(가정)**할 수 있음 (MIPS with Predict Not Taken)
+    * **가장 단순한 예측** 방법으로는 MIPS Pipeline에서,
+        * Branch 결과를 **일어나지 않은 것으로 예측(가정)할 수 있음** (MIPS with Predict Not Taken)
             * Branch 명령어 이후에 Instruction Fetch를 지연없이 바로 수행 가능
 
 ### Control Hazards --- Branch Prediction --- MIPS with Predict Not Taken
