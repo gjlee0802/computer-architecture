@@ -4,8 +4,8 @@
 * 주교재: 컴퓨터 구조 및 설계 - David A. Patterson 지음
     * [교보문고 링크](https://ebook-product.kyobobook.co.kr/dig/epd/ebook/E000008269697)
 * 블로그 정리
-    * [adencho님의 velog](https://velog.io/@adencho/%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0-Chapter4)
-
+    * [adencho님의 Velog](https://velog.io/@adencho/%EC%BB%B4%ED%93%A8%ED%84%B0-%EA%B5%AC%EC%A1%B0-Chapter4)
+    * [현록님의 Tistory](https://ydeer.tistory.com/143)
 
 ## 목차
 ### Chapter 4. The Processor
