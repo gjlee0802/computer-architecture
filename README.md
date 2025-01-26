@@ -14,7 +14,7 @@
 * [4.3 Building a Datapath](./4_3-building-a-datapath.md)
 * [4.4 A Simple Implementation Scheme(MIPS의 simplified version)](./4_4-a-simple-implementation-scheme.md)
 * [4.5 An Overview of Pipelining(MIPS의 pipelined version)](./4_5-an-overview-of-pipelining.md)
-* 4.6 Pipelined Datapath and Control
+* [4.6 Pipelined Datapath and Control](./4_6-pipelined-datapath-and-controll.md)
 * 4.7 Data Hazards : Forwarding vs Stalling
 * 4.8 Control Hazards
 * 4.9 Exceptions
