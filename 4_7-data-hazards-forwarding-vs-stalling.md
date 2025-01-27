@@ -6,7 +6,7 @@
 　or 　 $13, $6, **$2**  
 　add　$14, **$2**, **$2**  
 　sw 　 $15, 100(**$2**)  
-
+  
 * 우리는 Forwarding(bypassing)으로 Data Hazard를 해결할 수 있음
     * 그러면 Forwarding이 필요한 때는 어떻게 알 수 있는가(detect)?
 
@@ -81,7 +81,14 @@ Forwarding을 위해 경로 및 장치를 추가하면 아래와 같음
         * 만약, MEM/WB.RegisterRd가 Rs / Rt와 일치한다면, WB로 Write하려는 값(`녹색 부분`)을 가져와서 사용함
     * Forwarding Unit(`보라색 부분`)은 Control Signal(`보라샌 선 부분`)을 3x1의 MUX(`주황색 부분`)들로 전달하여 ALU의 피연산자로, ID 단계의 Register 값을 사용할지(Forwarding 없는 일반적인 경우), Forwarding으로 가져온 값을 사용할지(Forwarding하는 경우)를 제어함
 
-    ## 5. Datapath with Forwarding
-    전체 Datapath는 아래와 같음  
-    ![datapath_with_forwarding](./datapath_with_forwarding.png)  
-    
+## 5. Datapath with Forwarding
+### Forwarding Unit 추가 전
+![pipelined_control_diagram](./pipelined_control_diagram.png)  
+### Forwarding Unit 추가 후
+전체 Datapath는 아래와 같음  
+![datapath_with_forwarding](./datapath_with_forwarding.png)  
+* Forwarding Unit에서는 이전 Cycle들의 파이프라인 레지스터 Rd뿐만이 아니라, **EX/MEM.RegWrite, MEM/WB.RegWrite의 Control Signal**도 **Forwarding 판별에 필요**함
+    * 이들(EX/MEM.RegWrite, MEM/WB.RegWrite의 Control Signal) 역시 파이프라인 레지스터에서 Forwarding Unit으로 전달됨
+
+## 6. Forwarding Conditions
+TODO
