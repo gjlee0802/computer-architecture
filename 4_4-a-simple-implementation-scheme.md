@@ -1,3 +1,4 @@
+# 4.4. A simple implementation scheme
 ## 1. ALU(Arithmetic Logical Unit) Control
 * ALU는 다음에 쓰임
     * Load / Store: F = add

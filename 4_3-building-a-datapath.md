@@ -1,3 +1,4 @@
+# 4.3. Building a datapath
 ## 참고 자료
 * [유튜브: [컴퓨터구조] MIPS 명령어 데이터패스 처리과정 / R, I, J - Type](https://youtu.be/udRKoNkZRdQ?si=XDtZSlQG7a5unxkq)
 * https://blog.naver.com/hyowaii28/221947633176

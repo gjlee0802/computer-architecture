@@ -1,0 +1,1 @@
+# 4.7. Data hazards: Forwarding vs Stalling

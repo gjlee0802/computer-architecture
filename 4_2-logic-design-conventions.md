@@ -1,3 +1,4 @@
+# 4.2. Logic design conventions
 ## 1. Logic Design Basics
 * 정보는 이진수(0, 1)로 인코딩됨
 * Combinational Element(조합 요소)

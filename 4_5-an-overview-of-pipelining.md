@@ -1,3 +1,4 @@
+# 4.5. An overview of pipelining
 ## 1. Pipelining Analogy
 Pipelining: 여러 명령어가 중첩되어 실행되는 구현 기술
 Pipelining 방법론의 목적: 병렬처리로 성능 향상을 기대하는 것임
