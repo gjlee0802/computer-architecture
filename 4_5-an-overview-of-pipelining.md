@@ -140,7 +140,7 @@ A[4] = A[0] + A[2];
     * $t4를 미리 준비해놔서, 두번째 Stall도 같이 사라짐
         * 코드의 양을 줄이는 것이 아닌, 수행 순서를 바꾸는 것
 
-* 데이터 의존성성(Data Dependency)는 RAW, WAW, WAR의 3가지 경우가 존재
+* **데이터 의존성**(Data Dependency)는 **RAW, WAW, WAR의 3가지 경우가 존재**
     * **직전의 결과와 상관이 있을 때, Stall이 발생하는 Data Hazard**는 **RAW(Read After Write)에서 발생**
     * RAW에서 발생하는 Stall:
         * 읽기(Read) 작업이 쓰기(Write) 작업보다 먼저 실행되면 데이터가 틀려질 수 있음
