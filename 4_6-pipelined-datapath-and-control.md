@@ -1,3 +1,4 @@
+# 4.6. Pipelined datapath and control.md
 ## 1. MIPS Pipelined Datapath
 예전에 본 개략도는 single-cycle이고, 이제는 muilti-cycle(Pipelined) 개략도
 ![pipelined_datapath_overview](./pipelined_datapath_overview.png)
