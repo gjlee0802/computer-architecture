@@ -198,7 +198,7 @@ A[4] = A[0] + A[2];
         * 최신 프로세서는 이 방식을 사용
 
 ## 10. Pipeline Summary
-* Pipelining은 **Instruction의 Throughput(명령어의 양양)을 늘림으로써 성능을 향상시키는 방법**
+* Pipelining은 **Instruction의 Throughput(명령어의 양)을 늘림으로써 성능을 향상시키는 방법**
     * 한 명령어의 실행 속도가 아닌, 동시에 여러 명령을 가능하게 하는 양을 늘린 것
     * 병렬적으로 여러 명령을 실행
     * 각 Instruction은 같은 지연시간을 가짐
