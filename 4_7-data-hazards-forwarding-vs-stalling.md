@@ -13,10 +13,10 @@
 ## 2. Data Dependencies & Forwarding
 
 ### RECAP: Data Dependency (4.5. An Overview of Pipelining으로 돌아가서)
-* 데이터 의존성(Data Dependency)는 RAW, WAW, WAR의 3가지 경우가 존재
+* 데이터 의존성(Data Dependency)는 **RAW, WAW, WAR의 3가지 경우가 존재**
     * 직전의 결과와 상관이 있을 때, Stall이 발생하는 Data Hazard는 RAW(Read After Write)에서 발생
-    * RAW에서 발생하는 Stall:
-        * 읽기(Read) 작업이 쓰기(Write) 작업보다 먼저 실행되면 데이터가 틀려질 수 있음
+    * **RAW에서 발생하는 Stall**:
+        * **읽기(Read) 작업이 쓰기(Write) 작업보다 먼저 실행되면 데이터가 틀려질 수 있음**
         * 이 때문에 파이프라인이 잠시 멈추는(정지: stall) 현상이 발생
     * WAW와 WAR:
         * WAW와 WAR의 경우, 멀티쓰레드에서 동기화 문제와 비슷함
@@ -40,7 +40,7 @@
 * Pipeline을 통해 레지스터 번호를 넘겨준다(pass).
     * e.g., **ID/EX.RegisterRs**: ID/EX pipeline register의 **Rs(SourceRegister)를 위한** 레지스터 번호
 * EX stage에서의 ALU 피연산자 레지스터 번호는 다음과 같음(R-format의 ALU)
-    * ID/EX.RegisterRs, ID/EX.RegisterRt (Rs와 Rt)
+    * `ID/EX.RegisterRs`, `ID/EX.RegisterRt` (Rs와 Rt)
 ### Data Hazard가 발생하는 4가지 경우
 ~~~
 1. Fwd from EX/MEM Pipeline Register (EX 기준 2 Cycle 전에서의 Rd)
@@ -62,14 +62,14 @@
     * Pipeline Register에 함께 전해지는 Control Signal을 살펴보면, RegWrite 신호를 찾아볼 수 있음
         * EX/MEM.RegWrite, MEM/WB.RegWrite
 * Write 대상이므로, Write 대상 레지스터 번호를 나타낼 Rd도 $zero가 아닐 것임 (0번 레지스터에는 Write 불가능)
-    * EX/MEM.RegisterRd $\neq 0$
-    * MEM/WB.RegisterRd $\neq 0$
+    * `EX/MEM.RegisterRd` $\neq 0$
+    * `MEM/WB.RegisterRd` $\neq 0$
 
 ### Forwarding의 핵심 원리
 1. 현재 EX 단계의 명령어는 피연산자(Operands)를 필요로 함 (`ID/EX.RegisterRs`, `ID/EX.RegisterRt`)
 2. 이전 명령어가 이미 결과를 연산했지만 아직 WB(Write Back) 단계에서 저장하지 않았다면,
 **EX/MEM 단계나 MEM/WB 단계에서 Forwarding을 통해 직접 값을 전달할 수 있음**
-3. Forwarding 조건을 확인하는 Forwarding Unit이 **EX/MEM 단계 또는 MEM/WB 단계의 목적 레지스터(RegisterRd)**가 현재 명령어의 **소스 레지스터(RegisterRs, RegisterRt)**와 같은지를 비교하여 Forwarding 수행
+3. Forwarding 조건을 확인하는 Forwarding Unit이 **EX/MEM 단계 또는 MEM/WB 단계의 목적 레지스터(RegisterRd)가 현재 명령어의 소스 레지스터(RegisterRs, RegisterRt)와 같은지**를 비교하여 Forwarding 수행
 
 
 ## 4. Forwarding Paths
@@ -114,20 +114,20 @@ Forwarding을 위해 경로 및 장치를 추가하면 아래와 같음
 ### 핵심: Forwarding 조건들
 
 * EX Hazard (EX/MEM 단계의 결과를 Forwarding해야 하는 경우)
-    * (EX/MEM.RegWrite & EX/MEM.RegisterRd $\neq 0$) & (EX/MEM.RegisterRd == ID/EX.RegisterRs)  
+    * (`EX/MEM.RegWrite` & `EX/MEM.RegisterR`d $\neq 0$) & (`EX/MEM.RegisterRd` == `ID/EX.RegisterRs`)  
     -> ForwardA=10 (Forwarding 활성화, EX/MEM 단계에서 `Rs`로 값을 전달)  
-    * (EX/MEM.RegWrite & EX/MEM.RegisterRd $\neq 0$) & (EX/MEM.RegisterRd == ID/EX.RegisterRt)  
+    * (`EX/MEM.RegWrite` & `EX/MEM.RegisterRd` $\neq 0$) & (`EX/MEM.RegisterRd` == `ID/EX.RegisterRt`)  
     -> ForwardB = 10 (Forwarding 활성화, EX/MEM 단계에서 `Rt`로 값을 전달)
 * MEM Hazard (MEM/WB 단계에서 Forwarding해야 하는 경우)
-    * (MEM/WB.RegWrite & MEM/WB.RegisterRd $\neq 0$) & (MEM/WB.RegisterRd == ID/EX.RegisterRs)  
+    * (`MEM/WB.RegWrite` & `MEM/WB.RegisterRd` $\neq 0$) & (`MEM/WB.RegisterRd` == `ID/EX.RegisterRs`)  
     -> ForwardA = 01 (Forwarding 활성화, MEM/WB 단계에서 `Rs`로 값을 전달)
-    * (MEM/WB.RegWrite & MEM/WB.RegisterRd $\neq 0$) & (MEM/WB.RegisterRd == ID/EX.RegisterRt)  
+    * (`MEM/WB.RegWrite` & `MEM/WB.RegisterRd` $\neq 0$) & (`MEM/WB.RegisterRd` == `ID/EX.RegisterRt`)  
     -> ForwardB = 01 (Forwarding 활성화, MEM/WB 단계에서 `Rt`로 값을 전달)
 
 * No hazard일 경우
     * No Hazard일 때, `ForwardA = 00, ForwardB = 00`
-    * Forwarding 값의 **앞 비트(첫 번째 비트)**가 1이면 **EX Hazard**에서 데이터를 Forwarding.
-    * Forwarding 값의 **뒤 비트(두 번째 비트)**가 1이면 **MEM Hazard**에서 데이터를 Forwarding.
+    * Forwarding 값의 **앞 비트(첫 번째 비트)가** 1이면 **EX Hazard**에서 데이터를 Forwarding.
+    * Forwarding 값의 **뒤 비트(두 번째 비트)가** 1이면 **MEM Hazard**에서 데이터를 Forwarding.
 
 ### 핵심: Forwarding 동작 요약
 #### (1) EX Hazard: EX/MEM 단계에서 Forwarding
@@ -157,24 +157,24 @@ add $1, **$1**, $4  -> 위의 어느 것을 Forwarding으로 가져올까?
 ## 8. Revised Forwarding Conditions
 ### 수정된 Forwarding 조건 (Double Hazard를 고려)
 * EX Hazard (변경 없음, 그대로)
-    * (EX/MEM.RegWrite & EX/MEM.RegisterRd $\neq 0$) & (EX/MEM.RegisterRd == ID/EX.RegisterRs)  
+    * (`EX/MEM.RegWrite` & `EX/MEM.RegisterRd` $\neq 0$) & (`EX/MEM.RegisterRd` == `ID/EX.RegisterRs`)  
     **-> ForwardA=10** (Forwarding 활성화, EX/MEM 단계에서 `Rs`로 값을 전달)  
-    * (EX/MEM.RegWrite & EX/MEM.RegisterRd $\neq 0$) & (EX/MEM.RegisterRd == ID/EX.RegisterRt)  
+    * (`EX/MEM.RegWrite` & `EX/MEM.RegisterRd` $\neq 0$) & (`EX/MEM.RegisterRd` == `ID/EX.RegisterRt`)  
     **-> ForwardB = 10** (Forwarding 활성화, EX/MEM 단계에서 `Rt`로 값을 전달)  
 * MEM Hazard (not Double 조건 추가됨)
-    * (MEM/WB.RegWrite & MEM/WB.RegisterRd $\neq 0$)  
-    & not ((EX/MEM.RegWrite & EX/MEM.RegisterRd≠0) & (EX/MEM.RegisterRd == ID/EX.RegisterRs))  
-    & (MEM/WB.RegisterRd == ID/EX.RegisterRs)    
+    * (`MEM/WB.RegWrite` & `MEM/WB.RegisterRd` $\neq 0$)  
+    & not ((`EX/MEM.RegWrite` & `EX/MEM.RegisterRd` $\neq 0$) & (`EX/MEM.RegisterRd` == `ID/EX.RegisterRs`))  
+    & (`MEM/WB.RegisterRd` == `ID/EX.RegisterRs`)    
     **-> ForwardA = 01** (Forwarding 활성화, MEM/WB 단계에서 `Rs`로 값을 전달)
-    * (MEM/WB.RegWrite & MEM/WB.RegisterRd $\neq 0$)  
-    & not ((EX/MEM.RegWrite & EX/MEM.RegisterRd≠0) & (EX/MEM.RegisterRd == ID/EX.RegisterRt))  
-    & (MEM/WB.RegisterRd == ID/EX.RegisterRt)  
+    * (`MEM/WB.RegWrite` & `MEM/WB.RegisterRd` $\neq 0$)  
+    & not ((`EX/MEM.RegWrite` & `EX/MEM.RegisterRd` $\neq 0$) & (`EX/MEM.RegisterRd` == `ID/EX.RegisterRt`))  
+    & (`MEM/WB.RegisterRd` == `ID/EX.RegisterRt`)  
     **-> ForwardB = 01** (Forwarding 활성화, MEM/WB 단계에서 `Rt`로 값을 전달)
 
 ## 9. Load-Use Data Hazard
 * 바로 전에 살펴봤던 Dependency 문제는 RAW였음
 * 즉, 바로 전 Instruction에서 연산한 결과를 바로 가져오는 Forwarding을 해결할 수 있는 문제
-* 이제 살펴볼 문제는 메모리를 읽어야만 얻을 수 있는 값이라 Forwarding으로는 해결할 수 없는 문제
+* **이제 살펴볼 문제는 메모리를 읽어야만 얻을 수 있는 값이라 Forwarding으로는 해결할 수 없는 문제**
 
 이전에 Forwarding으로 줄여도 Stall을 완전히 없앨 수는 없어서 Code Scheduling 했던 부분 상기하기  
 Code Scheduling: 코드의 순서를 바꾸어 Stall 발생하는 코드는 미루고, 미리 해둘 작업을 우선적으로 수행하는 방법임  
@@ -195,7 +195,7 @@ MEM 이후의 값은 존재하지 않아서 가져올 수 없음 => Forwarding�
         * 이전 Cycle의 Rt의 번호(`ID/EX.RegisterRt`, 메모리에서 읽은 값을 넣을 레지스터 번호)와 같을 경우
 * 만약 Load-Use Hazard가 감지된다면, Stall이 발생할 것이며, 해당 부분에 bubble을 삽입하게 됨
 * 참고로, 아마 이전 Cycle은 I-Format Instruction일 것임 (lw 명령어)
-    * 아래 이미지에서 I-Type Instruction 구조 참고할 것
+    * 아래 이미지에서 I-Type Instruction 구조 참고할 것  
     ![serveral_type_of_instructions](./several_type_of_instructions.png)  
     * rs인 레지스터 값에 address를 더한 주소의 메모리에 접근하여, rt인 레지스터에 값을 가져올 것(Load: Mem to Reg)
 
