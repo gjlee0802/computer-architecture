@@ -16,7 +16,7 @@
 * [4.5 An Overview of Pipelining(MIPS의 pipelined version)](./4_5-an-overview-of-pipelining.md)
 * [4.6 Pipelined Datapath and Control](./4_6-pipelined-datapath-and-control.md)
 * [4.7 Data Hazards : Forwarding vs Stalling](./4_7-data-hazards-forwarding-vs-stalling.md)
-* 4.8 Control Hazards
+* [4.8 Control Hazards](./4_8-control-hazards.md)
 * 4.9 Exceptions
 * 4.10 Paralleslim via Instructions
 ### Chapter 5. Large and Fast : Exploiting Memory Hierarchy
