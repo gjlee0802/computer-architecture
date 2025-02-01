@@ -22,8 +22,8 @@ Instruction들을 병렬적으로 처리하여 속도를 향상시키기 위함
 다음 Instruction이 다음 Clock Cycle에 실행될 수 없는 상황
 즉, 매 Cycle마다 Instruction을 실행해야 하는데, 그렇지 못하는 경우
 ~~~
-- Structure Hazards
-    - **정의**: 사용하고자 하는 하드웨어 리소스가 사용 중에 있어서 구조적으로 지연이 발생하는 문제
+- Structure Hazards (Strutural)
+    - **정의**: 서로 다른 명령어들이 하드웨어 리소스를 동시에 사용하려고 할 때 구조적으로 생기는 문제
     - **예시**: 예를 들어 Load/Store 명령어가 메모리에 접근하는 동시에 Instruction Fetch를 하려 하는 다른 Instruction가 있어, 동시적으로 하드웨어에 접근하여 발생하는 지연 문제가 있음
     - **해결**: Instruction Memory와 Data Memory를 구조적으로 분리시켜야 하거나, Instruction과 Data Cache를 분리해야 함
 - Data Hazards
@@ -50,7 +50,7 @@ Branch Prediction은 Control Hazards를 위한 분기 결과를 예측함으로�
 
 
 ## Pipeline Hazards 심층 문제
-### 1. 5단계의 Pipeline에서 아래의 코드가 수행된다고 하자  
+### 1. 5단계의 Pipeline에서 아래의 코드가 수행된다고 하자. (SSU 19년도 기출)
 ~~~
 add $3, $1, $2      ...(1)
 and $12, $5, $3     ...(2)
@@ -58,7 +58,7 @@ or  $13, $3, $6     ...(3)
 sub $14, $3, $$2    ...(4)
 sw  $15, 100($3)    ...(5)
 ~~~
-#### 1.1. 위 코드 수행과정에서 발생하는 hazard를 설명하시오
+#### 1.1. 위 코드 수행과정에서 발생하는 hazard를 설명하시오.
 ~~~
 data hazard가 발생한다. 
 (2)를 수행함에 있어서 EX 단계(ALU)에서 $3에 해당하는 값이 필요한데, 
@@ -117,4 +117,16 @@ Yes, Forwarding 방법만으로 해결 가능하다.
 bubble은 1개 필요하다. 
 한번의 Stall이면 (4)번 명령에서 $2의 값이 필요한 시점(EX 단계)에,
 (2)번 명령의 WB 단계를 마칠 수 있기 때문이다.
+~~~
+
+### 2. '그림 1'은 5단계 pipeline에서 data hazard를 해결하기 위해 forwarding unit과 hazard detection unit이 추가된 회로도이다. (SSU 17년도 기출)
+![datapath_with_hazard_detection](../image_files/datapath_with_hazard_detection.png)  
+그림 1. data hazard를 해결하기 위해 forwarding unit과 hazard detection unit이 추가된 회로도
+#### 2.1. 아래 코드를 그림 1 회로에서 수행할 경우, 발생하는 모든 hazard에 대해 구체적으로 설명하시오.
+~~~
+add $5, $2, $1      ...(1)
+lw  $3, 4($5)       ...(2)
+lw  $2, 0($2)       ...(3)
+or  $3, $5, $3      ...(4)
+sw  $3, 0($5)       ...(5)
 ~~~
