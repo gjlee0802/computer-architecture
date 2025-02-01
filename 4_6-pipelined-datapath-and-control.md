@@ -100,7 +100,7 @@ add $14, $5, $6
 ## 7. Pipelined Control
 
 * Control Signal(Control 신호)는 Instruction으로부터 파생됨 (Single-Cycle에서처럼)
-![pipelined_control_signal_overview](pipelined_control_signal_overview.png)
+![pipelined_control_signal_overview](./image_files/pipelined_control_signal_overview.png)
 * 각 Stage에 Control 신호들이 전달되기 위해 파이프라인 레지스터(Pipeline Register)에 함께 전달되며 유지(보존)되어야 함
     * Pipeline 구조에서는 ID에서 또 새로운 명령어로 다른 제어신호들이 생성되기 때문에,
     * Single-Cycle과는 달리, ID에서 해석되어 생성된 제어신호들이 각 Stage에 쓰이기 위해 보존되어야 함
