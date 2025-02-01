@@ -13,28 +13,33 @@
 1. 파이프라이닝은 왜 하는가?
 ~~~
 Instruction들을 병렬적으로 처리하여 속도를 향상시키기 위함
+
+병렬처리로 성능 향상을 기대하는 것임 만약 모든 단계(stage)가 거의 같은 시간이 걸리고, 할 일이 충분히 많다면, 
+파이프라이닝에 의한 속도 향상은 파이프라이닝 단계 수(stage 수)와 같음
 ~~~
 2. 파이프라인 해저드(Pipeline Hazard)란 무엇인가? 그리고 종류에는 무엇이 있는가?
 ~~~
-파이프라인 해저드는 병렬적으로 처리함에 있어서 성능이 저하되는 사건을 말하며
-아래의 세가지 종류가 있음
+다음 Instruction이 다음 Clock Cycle에 실행될 수 없는 상황
+즉, 매 Cycle마다 Instruction을 실행해야 하는데, 그렇지 못하는 경우
 ~~~
 - Structure Hazards
-    - 정의: 하드웨어 리소스를 사용함에 있어서 구조적으로 지연이 발생하는 문제
-    - 예시: 예를 들어 동시적으로 하드웨어에 접근하여 발생하는 지연 문제가 있음
-    - 해결: Instruction Memory와 Data Memory를 구조적으로 분리시켜야 함
+    - **정의**: 하드웨어 리소스를 사용함에 있어서 구조적으로 지연이 발생하는 문제
+    - **예시**: 예를 들어 동시적으로 하드웨어에 접근하여 발생하는 지연 문제가 있음
+    - **해결**: Instruction Memory와 Data Memory를 구조적으로 분리시켜야 함
 - Data Hazards
-    - 정의: 사용하려는 데이터가 준비되지 않아 데이터 의존성으로 인해 지연이 발생하는 문제
-    - 예시: 바로 직전 Instruction의 연산 결과가 레지스터에 쓰이지 않는 Read After Write 문제 같은 경우가 발생할 수 있음
-    - 해결: 위의 예시 같은 경우는 Forwarding으로 해결하며, Forwarding으로 해결되지 않는 예시로는 ALU 연산 결과를 바로 가져오지 못하고 메모리에서 데이터를 읽어야 값을 가져올 수 있는 예가 있는데, 이러한 경우 Code Scheduling을 통한 Stall 방지를 고려할 수 있음
+    - **정의**: 사용하려는 데이터가 준비되지 않아 데이터 의존성으로 인해 지연이 발생하는 문제
+    - **예시**: 바로 직전 Instruction의 연산 결과가 레지스터에 쓰이지 않는 Read After Write 문제 같은 경우가 발생할 수 있음
+    - **해결**: 위의 예시 같은 경우는 **Forwarding**으로 해결하며, Forwarding으로 해결되지 않는 예시로는 메모리에서 데이터를 읽어야 값을 가져올 수 있어서 값이 존재하지 않는 예가 있는데, 이러한 경우 **Code Scheduling**을 통한 Stall 방지를 고려할 수 있음
 - Control Hazards
-    - 정의: 분기로 인해 Instruction flow가 바뀜으로 인해 지연이 발생하는 문제
-    - 예시: 예를 들어 beq 같은 조건부 분기(branch)가 있다고 할 때, 바로 다음 Instruction을 처리하기 위해 수행 중일 수 있는데, branch로 인해 다른 Instruction 수행을 해야할 수 있음
-    - 해결: Branch Prediction을 도입하여 간단한 방법으로는 항상 틀린 것(아닌 것으로)으로 예측(가정)할 수 있으며(다음 Instruction이 수행될 것으로 예측), 다른 현실적인 방법으로는 Hisory 테이블을 활용하여 이전의 branch 결과를 참고하여 예측하는 방법이 있음
+    - **정의**: 분기로 인해 Instruction flow가 바뀜으로 인해 지연이 발생하는 문제
+    - **예시**: 예를 들어 beq 같은 조건부 분기(branch)가 있다고 할 때, 바로 다음 Instruction을 처리하기 위해 수행 중일 수 있는데, branch로 인해 다른 Instruction 수행을 해야할 수 있음
+    - **해결**: Branch Prediction을 도입하여 간단한 방법으로는 항상 틀린 것(아닌 것으로)으로 예측(가정)할 수 있으며(다음 Instruction이 수행될 것으로 예측), 다른 현실적인 방법으로는 Hisory 테이블을 활용하여 이전의 branch 결과를 참고하여 예측하는 방법이 있음
 
 3. 파이프라이닝에서 Branch Prediction의 역할은 무엇인가?
 ~~~
-Branch Prediction은 Control Hazards를 위한 분기 결과를 예측함으로써 지연을 줄이려는 방법으로, 단순한 방법으로는 항상 분기 결과가 틀린 것(아닌 것)으로 가정하는 것이 있으며, 현실적인 방법으로는 history table을 이용하여 이전의 분기들을 참고해서 예측하는 Dynamic Branch Prediction이 있음
+Branch Prediction은 Control Hazards를 위한 분기 결과를 예측함으로써 지연을 줄이려는 방법으로, 
+단순한 방법으로는 항상 분기 결과가 틀린 것(아닌 것)으로 가정하는 것이 있으며, 
+현실적인 방법으로는 history table을 이용하여 이전의 분기들을 참고해서 예측하는 Dynamic Branch Prediction이 있음
 ~~~
 
 4. Branch Prediction에서 단순히 아닌 것으로 가정하는 방법을 사용했을 때의 문제점은? (굳이 Dynamic Branch Prediction을 사용하는 이유)
