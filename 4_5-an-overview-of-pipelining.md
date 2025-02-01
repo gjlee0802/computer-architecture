@@ -6,7 +6,7 @@ Pipelining 방법론의 목적: 병렬처리로 성능 향상을 기대하는 �
 ### 할 일이 단계 수에 비해 충분하지 않을 경우
 * 아래의 그림에서 4배(stage 수)만큼이 아니라 2.3배 빠른 이유: 묶음이 4개밖에 없기 때문임 (즉, 할일이 파이프라인 단계 수에 비해 많지 않을 경우)
 * 이렇게 할일이 충분하지 않을 경우에는, 시작 시간과 마무리 시간이 성능에 영향을 미침 
-![pipelining_similar_cleaning](./pipelining_similar_cleaning.png)
+![pipelining_similar_cleaning](./image_files/pipelining_similar_cleaning.png)
 ## 2. MIPS Pipeline
 ### 5개의 Pipeline 단계
 1. IF: 메모리로부터 Instruction Fetch (메모리로부터 명령어 로드)
@@ -17,9 +17,9 @@ Pipelining 방법론의 목적: 병렬처리로 성능 향상을 기대하는 �
 
 ## 3. Pipeline Performance
 ### Pipeline화된 data path에서의 실행 시간과 Single-cycle의 data path에서의 실행 시간 비교
-![pipelined_vs_single-cycle_time_comparison](./pipelined_vs_single-cycle_time_comparison.png)
+![pipelined_vs_single-cycle_time_comparison](./image_files/pipelined_vs_single-cycle_time_comparison.png)
 
-![single-cycle_vs_pipelined](./single-cycle_vs_pipelined.png)
+![single-cycle_vs_pipelined](./image_files/single-cycle_vs_pipelined.png)
 ## 4. Pipeline Speedup
 * 만약 모든 단계들이 비슷한 처리시간을 갖는다면, '단계 수'배의 성능 향상 기대
 * 모든 단계가 균등하지 않다면 속도 향상의 효과는 더 적을 것 => 가장 느린 단계에 맞춰짐
@@ -87,7 +87,7 @@ Pipelining 방법론의 목적: 병렬처리로 성능 향상을 기대하는 �
     add　$s0, $t0, $t1
     sub　$t2, $s0, $t3
     ~~~
-    ![data_hazards_2stalls](./data_hazards_2stalls.png)
+    ![data_hazards_2stalls](./image_files/data_hazards_2stalls.png)
 * 해결책
     * Stalling
     * nop(아무것도 안하는) Instructions 삽입 (Stall과 유사)
@@ -98,14 +98,14 @@ Pipelining 방법론의 목적: 병렬처리로 성능 향상을 기대하는 �
 * 계산된 직후의 결과를 바로 사용(레지스터에 저장되기 전에 곧바로)
     * 레지스터에 write back되는 것을 기다리지 않음(store까지 기다리지 않음)
     * Datapath에 추가적인 연결이 필요하다
-    ![data_hazards_forwarding](./data_hazards_forwarding.png)
+    ![data_hazards_forwarding](./image_files/data_hazards_forwarding.png)
 
 ### Data Hazards --- Fowarding --- Load-Use Data Hazard (적재-사용)
 * 항상 forwarding(aka bypadding)으로 모든 Stall을 피할 수는 없을 수 있음
     * 결과가 필요한 순간에 아직 계산이 완료되지 않았다면,
     * 제 때에 값을 끌어올 수도 없이 "존재하지도 않는다면" 활용도 불가능
     * 예를 들어 아래 그림에서 lw　$s0, 20($t1) 명령어의 경우,
-        ![data_hazards_forwarding_loaduse](./data_hazards_forwarding_loaduse.png)
+        ![data_hazards_forwarding_loaduse](./image_files/data_hazards_forwarding_loaduse.png)
         ~~~
         EX 단계에서: 20($t1)의 주소를 ALU에서 계산,(이건 수행했음)
         MEM 단계에서: 그 주소를 토대로 MEM에 접근,(이제 접근 중이라 값을 다 못 가져옴)
@@ -131,7 +131,7 @@ A[3] = A[0] + A[1];
 A[4] = A[0] + A[2];
 ~~~
 
-![data_hazards_code_scheduling_example](./data_hazards_code_scheduling_example.png)
+![data_hazards_code_scheduling_example](./image_files/data_hazards_code_scheduling_example.png)
 
 * Data Dependency로 **Stall이 발생하는 순서에서 Independent한 명령어끼리 연속되도록** 해서 Stall을 없앰
     * 왼쪽 코드에서, `add $t3, $t1, $t2`에서 $t2의 값을 알려면, 4($t0) 때문에 (MEM 직후까지) Forwarding을 해도, 1개 Stall 발생
@@ -163,7 +163,7 @@ A[4] = A[0] + A[2];
 
 ### Control Hazards --- Stall on Branch
 * Branch에서의 Stall: 다음 Instruction을 Fetch하기 전에, Brach 결과가 결정되기를 기다리는 상황
-![control_hazards_stall_on_branch](./control_hazards_stall_on_branch.png)
+![control_hazards_stall_on_branch](./image_files/control_hazards_stall_on_branch.png)
 * ID(Instruction Decode) Stage(분기 조건 검사 단계)에 HW를 추가하여 미리 비교를 하고 주소를 계산했더라도, ID Stage가 끝나야 알 수 있으므로, 1 Cycle Stall
 
 ### Control Hazards --- Branch Prediction
@@ -178,7 +178,7 @@ A[4] = A[0] + A[2];
 
 ### Control Hazards --- Branch Prediction --- MIPS with Predict Not Taken
 * MIPS에서, 일어나지 않은(분기 조건에 만족하지 않는) 순차적인 흐름(PC+4)으로 예측
-![control_hazards_predict_not_taken](./control_hazards_predict_not_taken.png)
+![control_hazards_predict_not_taken](./image_files/control_hazards_predict_not_taken.png)
 
 ### Control Hazards --- Branch Prediction --- 좀 더 현실적인 Branch Prediction
 실제로 사용하는 것에 가까운 방식의 예측들임  

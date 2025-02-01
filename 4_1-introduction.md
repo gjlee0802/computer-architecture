@@ -46,10 +46,10 @@
 
 ## 3. CPU Overview
 ### Control이 없는 개략도
-![cpu_overview_1](./cpu_overview_1.png)
+![cpu_overview_1](./image_files/cpu_overview_1.png)
 * 실제로는 여러 선이 함께 만날 수 없음. 원래는 MUX(Multiplexer)를 사용해 그 중 하나의 신호를 선택
 ### Control 추가한 개략도
-![cpu_overview_2](./cpu_overview_2.png)
+![cpu_overview_2](./image_files/cpu_overview_2.png)
 * Control
     * 각각의 HW 모듈(레지스터, 메모리, ...)이 어떻게 동작하는지 제어해주는 컨트롤을 만들어주는 회로
     * 명령어를 읽어서 해당하는 **제어 신호를 만들어냄**

@@ -74,7 +74,7 @@
 
 ## 4. Forwarding Paths
 Forwarding을 위해 경로 및 장치를 추가하면 아래와 같음  
-![forwarding_paths](./forwarding_paths.png)  
+![forwarding_paths](./image_files/forwarding_paths.png)  
 * Forwarding 감지를 위해 현재 Cycle의 ID/EX.Register의 Rs, Rt(`파란색 부분`)를 Forwarding Unit(`보라색 부분`)에 전달
     * 현재 **피연산자 Rs, Rt가 제대로 준비되었는지**가 Data Hazard와 Forwarding의 핵심이므로, 현재 Cycle은 피연산자가 필요한 실행단계인 **EX Stage**임
 * **1 Cycle 전의 Instruction과 2 Cycle 전의 Instruction에서**(둘 다 아직 덜 끝남) **쓰여질 목표 레지스터(Rd)가 현재 Rs나 Rt와 같다면, 레지스터에는 값이 아직 제대로 쓰이지 않았을 것임을 의미**
@@ -90,10 +90,10 @@ Forwarding을 위해 경로 및 장치를 추가하면 아래와 같음
 
 ## 5. Datapath with Forwarding
 ### Forwarding Unit 추가 전
-![pipelined_control_diagram](./pipelined_control_diagram.png)  
+![pipelined_control_diagram](./image_files/pipelined_control_diagram.png)  
 ### Forwarding Unit 추가 후
 전체 Datapath는 아래와 같음  
-![datapath_with_forwarding](./datapath_with_forwarding.png)  
+![datapath_with_forwarding](./image_files/datapath_with_forwarding.png)  
 * Forwarding Unit에서는 이전 Cycle들의 파이프라인 레지스터 Rd뿐만이 아니라, **EX/MEM.RegWrite, MEM/WB.RegWrite의 Control Signal**도 **Forwarding 판별에 필요**함
     * 이들(EX/MEM.RegWrite, MEM/WB.RegWrite의 Control Signal) 역시 파이프라인 레지스터에서 Forwarding Unit으로 전달됨
 
@@ -178,7 +178,7 @@ add $1, **$1**, $4  -> 위의 어느 것을 Forwarding으로 가져올까?
 
 이전에 Forwarding으로 줄여도 Stall을 완전히 없앨 수는 없어서 Code Scheduling 했던 부분 상기하기  
 Code Scheduling: 코드의 순서를 바꾸어 Stall 발생하는 코드는 미루고, 미리 해둘 작업을 우선적으로 수행하는 방법임  
-![cant_do_forwarding_need_to_stall](./cant_do_forwarding_need_to_stall.png)
+![cant_do_forwarding_need_to_stall](./image_files/cant_do_forwarding_need_to_stall.png)
 현재 Cycle은 EX Stage(CC 4)이고, 이전 Cycle의 값들이라봐야 EX/MEM에 있는 값들뿐이라,  
 MEM 이후의 값은 존재하지 않아서 가져올 수 없음 => Forwarding으로 Stall을 막을 수 없음  
 
@@ -196,7 +196,7 @@ MEM 이후의 값은 존재하지 않아서 가져올 수 없음 => Forwarding�
 * 만약 Load-Use Hazard가 감지된다면, Stall이 발생할 것이며, 해당 부분에 bubble을 삽입하게 됨
 * 참고로, 아마 이전 Cycle은 I-Format Instruction일 것임 (lw 명령어)
     * 아래 이미지에서 I-Type Instruction 구조 참고할 것  
-    ![serveral_type_of_instructions](./several_type_of_instructions.png)  
+    ![serveral_type_of_instructions](./image_files/several_type_of_instructions.png)  
     * rs인 레지스터 값에 address를 더한 주소의 메모리에 접근하여, rt인 레지스터에 값을 가져올 것(Load: Mem to Reg)
 
 ## 11. How to Stall the Pipeline
@@ -210,10 +210,10 @@ MEM 이후의 값은 존재하지 않아서 가져올 수 없음 => Forwarding�
     * 1 Cycle의 Stall은 이전의 명령어(lw)가 충분히 MEM에서 데이터를 읽어올 수 있도록 기다려주었으니, 현재 명령어가 EX Stage를 진행할 수 있음
 
 ## 12. Stall / Bubble in the Pipeline
-![stall_bubble_in_the_pipeline](./stall_bubble_in_the_pipeline.png)  
+![stall_bubble_in_the_pipeline](./image_files/stall_bubble_in_the_pipeline.png)  
 
 ## 13. Datapath with Hazard Detection
-![datapath_with_hazard_detection](./datapath_with_hazard_detection.png)  
+![datapath_with_hazard_detection](./image_files/datapath_with_hazard_detection.png)  
 * ID Stage에 Hazard Detection Unit이 추가됨
     * Hazard Detection Unit에 `ID/EX.MemRead 제어 신호`가 전달됨
     * Hazard Detection Unit에 `ID/EX.RegisterRt`(1 Cycle 전의 Rt)가 전달됨

@@ -14,9 +14,9 @@
 * Instruction 메모리로부터 instruction을 읽음
 * PC의 값이 Instruction 메모리에 input으로 들어가면, 해당 instruction이 output으로 출력됨
 * 동시에 현재 PC 값에 4를 더한 후 PC에 저장 (PC = PC + 4)
-![instruction_fetch](./instruction_fetch.png)
+![instruction_fetch](./image_files/instruction_fetch.png)
 ### Instructions(R, J, I Format)
-![serveral_type_of_instructions](./several_type_of_instructions.png)
+![serveral_type_of_instructions](./image_files/several_type_of_instructions.png)
 
 ## 3. R-Format Instructions
 
@@ -28,14 +28,14 @@
 * rd = 5bit, destination operand
     * 연산 결과가 저장되는 레지스터를 적어줌
 ### rs, rt, rd의 Registers 입력 
-![R-format_instructions_registers](./R-format_instructions_registers_input.png)
+![R-format_instructions_registers](./image_files/R-format_instructions_registers_input.png)
 * op는 Control 유닛에 입력됨
 * rs는 Read register 1에 입력됨
 * rt는 Read register 2에 입력됨 (Control 유닛의 RegDst 출력이 1)
 * rd는 Write register에 입력
 
 ### Instruction 수행 결과가 Registers로 향하기까지 과정
-![R-format_instructions_datapath](./R-format_instructions_datapath_overview.png)
+![R-format_instructions_datapath](./image_files/R-format_instructions_datapath_overview.png)
 * 맨 처음에 PC에서 입력되는 메모리 주소에 해당하는 Instruction을 Instruction 메모리에서 읽어오게 됨
 * R 타입 같은 경우 rs와 rt 값으로 계산된 값이 rd(Register 주소값)에 저장되는 것임
 * rd(Register 주소값)에 저장해야 하므로 ALU result는 메인메모리를 통과하지 않고 MUX로 향함
@@ -60,14 +60,14 @@
     * 참고로, sw(stores writes)는 lw와 반대로 동작 (레지스터에 있는 겂을 메모리에 저장)
 
 ### rs, rt, rd의 Registers 입력 
-![I-format_instructions_registers](./I-format_instructions_registers_input.png)
+![I-format_instructions_registers](./image_files/I-format_instructions_registers_input.png)
 * op는 Control 유닛에 입력됨
 * rs는 Read register 1에 입력됨
 * rt는 **Write register**에 입력됨 (Control 유닛의 RegDst 출력이 0)
 * address는 Sign-extend에 입력됨 (address 값이 쪼개지면 의미가 없으며, 뭉탱이로 있어야 유의미)
 
 ### Instruction 수행 결과가 Registers로 향하기까지 과정
-![I-format_instructions_datapath](./R-format_instructions_datapath_overview.png)
+![I-format_instructions_datapath](./image_files/R-format_instructions_datapath_overview.png)
 * 맨 처음에 PC에서 입력되는 메모리 주소에 해당하는 Instruction을 Instruction 메모리에서 읽어오게 됨
 * rs는 Registers를 통과하여 rs에 해당하는 값이 ALU로 입력됨
 * address는 Sign-extend를 거쳐 32비트로 확장된 주소값이 Mux를 거쳐 ALU로 입력됨
@@ -78,7 +78,7 @@
 ## 5. Branch(J-Format) Instructions
 
 ### Instruction 수행 결과가 Registers로 향하기까지 과정
-![I-format_instructions_datapath](./I-format_instructions_datapath_overview.png)
+![I-format_instructions_datapath](./image_files/I-format_instructions_datapath_overview.png)
 * 맨 처음에 PC에서 입력되는 메모리 주소에 해당하는 Instruction을 Instruction 메모리에서 읽어오게 됨
 * address는 Shift left 2 유닛으로 향함
 * Shift left 2 유닛에 의해 4를 곱하게 됨

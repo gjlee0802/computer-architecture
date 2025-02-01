@@ -18,36 +18,36 @@
 * opcode로부터 2 bits 부분적으로 가져와서 ALUOp로 도출함
 * ALUOp로 도출한 이후엔 Combinational logic을 사용하여 ALU Control을 만들어냄  
 
-![alu_control_table](./alu_control_table.png)
+![alu_control_table](./image_files/alu_control_table.png)
 
 ## 2. The Main Control Unit
 * Control 신호는 Instruction으로부터 얻어짐(Instruction에 의해 도출됨)
 * [31:26]의 opcode 부분은 Control 유닛에 전달되며, R-Format Instruction일 경우에는 funct 필드가 ALU Control 유닛에 전달됨  
 
-![serveral_type_of_instructions](./several_type_of_instructions.png)
+![serveral_type_of_instructions](./image_files/several_type_of_instructions.png)
 
 ## 3. Datapath with Control
-![datapath_with_control_overview](./datapath_with_controll_overview.png)
+![datapath_with_control_overview](./image_files/datapath_with_controll_overview.png)
 
 ## 4. R-Type Instruction
-![R-format_instructions_datapath](./R-format_instructions_datapath_overview.png)
+![R-format_instructions_datapath](./image_files/R-format_instructions_datapath_overview.png)
 ### R-Type Instruction의 Data 및 Control 흐름
-![R-format_instruction_data_control_flow](./R-format_instruction_data_control_flow.png)
+![R-format_instruction_data_control_flow](./image_files/R-format_instruction_data_control_flow.png)
 
 ## 5. Load Instruction
-![I-format_instructions_datapath](./I-format_instructions_datapath_overview.png)  
+![I-format_instructions_datapath](./image_files/I-format_instructions_datapath_overview.png)  
 lw 명령어의 경우, rs 주소로부터 byte offset(address 필드에 해당)만큼 떨어진 주소의 값을 rt 레지스터 주소에 저장하도록 함 
 ### Load Word Instruction의 Data 및 Control 흐름
-![I-format_instruction_data_control_flow](./I-format_instruction_data_control_flow.png)
+![I-format_instruction_data_control_flow](./image_files/I-format_instruction_data_control_flow.png)
 
 ## 6. Branch-on-Equal Instruction
-![J-format_instructions_datapath](./J-format_instructions_datapath_overview.png)
+![J-format_instructions_datapath](./image_files/J-format_instructions_datapath_overview.png)
 
 ### Branch Instruction의 Data 및 Control 흐름
-![J-format_instruction_data_control_flow](./J-format_instruction_data_control_flow.png)
+![J-format_instruction_data_control_flow](./image_files/J-format_instruction_data_control_flow.png)
 
 ## 7. Implementing Jumps
-![jump_instruction](./jump_instruction.png)  
+![jump_instruction](./image_files/jump_instruction.png)  
 * 직접 주소(word address)를 사용한 Jump
 * concatenation(이어붙이기) 방식으로 PC를 업데이트
     * 26 bits의 address
@@ -58,9 +58,9 @@ lw 명령어의 경우, rs 주소로부터 byte offset(address 필드에 해당)
 Jump가 추가된 data path는 아래처럼  
 * Jump라는 control 신호가 추가됨
 * Mux가 추가됨
-![datapath_jump_added](./datapath_jump_added.png)
+![datapath_jump_added](./image_files/datapath_jump_added.png)
 ### Adding the Jump Operation
-![adding_jump_op](./adding_jump_op.png)
+![adding_jump_op](./image_files/adding_jump_op.png)
 
 ## Performance Issues
 * 가장 지연시간이 긴 부분(longest delay) => 전체 클럭 주기 (Clock Period, 하나의 Clock Cycle이 완료되는 데 걸리는 시간)를 결정함  

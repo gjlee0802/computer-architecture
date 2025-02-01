@@ -25,8 +25,8 @@
 ...  
 72: lw  $4, 50($7)     #(40+4)+**7***4=72  
   
-![control_hazards_reducing_branch_delay_datapath_1](./control_hazards_reducing_branch_delay_datapath_1.png)
-![control_hazards_reducing_branch_delay_datapath_2](./control_hazards_reducing_branch_delay_datapath_2.png)
+![control_hazards_reducing_branch_delay_datapath_1](./image_files/control_hazards_reducing_branch_delay_datapath_1.png)
+![control_hazards_reducing_branch_delay_datapath_2](./image_files/control_hazards_reducing_branch_delay_datapath_2.png)
 * beq는 다음 stage들도 넘어가도 딱히 할 일은 없음
 * 예측이 맞다면 상관없이 다음 명령어 계속 수행
 * 예측이 틀리고 분기로 이동(jump)해야한다면,
@@ -39,20 +39,20 @@
 Data Hazard는 이전 명령어가 데이터를 읽거나 쓰는 것이 완료될 때까지 기다려야 하는 상황 (데이터 의존성에 의해)
 
 ## 4. Data Hazards for Branches
-![data_hazards_for_branches_1](./data_hazards_for_branches_1.png)
+![data_hazards_for_branches_1](./image_files/data_hazards_for_branches_1.png)
 * 만약 branch에서 비교하려는 레지스터가 2 Cycle 전이나 3 Cycle 전의 ALU Instruction 결과(Rd)라면 (아직 레지스터에 값이 쓰이지 않음),
     * RAW 데이터 의존성에 의한 것이므로 Forwarding을 통해 해결 가능
         * 이전에 본 forwarding은 현재 cycle이 EX stage였음(ALU에 필요한 피연산자)
         * 그런데 이번에 보는 branch의 비교 ALU는 ID 단계에 있기 때문에, (1 Cycle / 2 Cycle 전 단계가 아닌) 2 Cycle / 3 Cycle 전 단계에 대해 forwarding 가능함
         * (1 전 명령어는 이제 막 EX를 수행하는 중이고, 2 전 명령어는 EX/MEM, 3 전 명령어가 MEM/WB)  
 
-![data_hazards_for_branches_2](./data_hazards_for_branches_2.png)
+![data_hazards_for_branches_2](./image_files/data_hazards_for_branches_2.png)
 * 만약 비교하려는 레지스터가
     * 1 Cycle 전의 ALU Instruction의 결과(`ID/EX.RegisterRd`)이거나,
     * 2 Cycle 전의 load로 불러온 값을 쓸 레지스터(`EX/MEM.RegisterRt`)라면,
     * forwarding할 수 없고, stall이 발생할 수 밖에 없음
 
-![data_hazards_for_branches_3](./data_hazards_for_branches_3.png)
+![data_hazards_for_branches_3](./image_files/data_hazards_for_branches_3.png)
 * 1 Cycle 전(직전) 명령어가 산술(add)일 때, 이제 EX 들어가려하기 때문에 값이 없을 것임
     * branch의 피연산자인 ALU의 결과는 1번의 Stall이 필요
 * 2 Cycle 전 명령어가 load일 때, 이제 MEM 들어가려하기 때문에 값이 없을 것임
@@ -77,7 +77,7 @@ Data Hazard는 이전 명령어가 데이터를 읽거나 쓰는 것이 완료�
 1-Bit, 바로 전의 결과만 사용하는 경우
 
 * 다중 loop에서, 안쪽 loop branch는 예측 실패를 2번 함(처음, 마지막)
-![multiple_loop_branch](./multiple_loop_branch.png)
+![multiple_loop_branch](./image_files/multiple_loop_branch.png)
 * 안쪽 loop의 반복 중 마지막에서,
     * 예측 실패(mispredict)는 일어날 것(taken)으로 나타남
     * 원인: 안쪽 loop는 항상 일어나서(taken) 내부가 반복되었기 때문에 이번에도 그럴 것으로 예측
@@ -89,7 +89,7 @@ Data Hazard는 이전 명령어가 데이터를 읽거나 쓰는 것이 완료�
 * 두번의 연속된 예측실패(misprediction)이 일어나야만 예측기준의 결과(predictor가 판단할)를 역전시킴  
     * 11 <--> 10 <--> 01 <--> 00  
 
-![2bit_predictor_state_transition_diagram](./2bit_predictor_state_transition_diagram.png)
+![2bit_predictor_state_transition_diagram](./image_files/2bit_predictor_state_transition_diagram.png)
 
 ## 8. Calculation the Branch Target(address)
 * branch 명령어를 위해 기존의 EX stage에서였든, ID stage로 옮겼든, 대상 주소를 계산해야 함

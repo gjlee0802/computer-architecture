@@ -9,14 +9,14 @@
 
 ## 목차
 ### Chapter 4. The Processor
-* [4.1 Introduction](./4_1-introduction.md)
-* [4.2 Logic Design Conventions](./4_2-logic-design-conventions.md)
-* [4.3 Building a Datapath](./4_3-building-a-datapath.md)
-* [4.4 A Simple Implementation Scheme(MIPS의 simplified version)](./4_4-a-simple-implementation-scheme.md)
-* [4.5 An Overview of Pipelining(MIPS의 pipelined version)](./4_5-an-overview-of-pipelining.md)
-* [4.6 Pipelined Datapath and Control](./4_6-pipelined-datapath-and-control.md)
-* [4.7 Data Hazards : Forwarding vs Stalling](./4_7-data-hazards-forwarding-vs-stalling.md)
-* [4.8 Control Hazards](./4_8-control-hazards.md)
+* [4.1 Introduction](./image_files/4_1-introduction.md)
+* [4.2 Logic Design Conventions](./image_files/4_2-logic-design-conventions.md)
+* [4.3 Building a Datapath](./image_files/4_3-building-a-datapath.md)
+* [4.4 A Simple Implementation Scheme(MIPS의 simplified version)](./image_files/4_4-a-simple-implementation-scheme.md)
+* [4.5 An Overview of Pipelining(MIPS의 pipelined version)](./image_files/4_5-an-overview-of-pipelining.md)
+* [4.6 Pipelined Datapath and Control](./image_files/4_6-pipelined-datapath-and-control.md)
+* [4.7 Data Hazards : Forwarding vs Stalling](./image_files/4_7-data-hazards-forwarding-vs-stalling.md)
+* [4.8 Control Hazards](./image_files/4_8-control-hazards.md)
 * 4.9 Exceptions
 * 4.10 Paralleslim via Instructions
 ### Chapter 5. Large and Fast : Exploiting Memory Hierarchy
