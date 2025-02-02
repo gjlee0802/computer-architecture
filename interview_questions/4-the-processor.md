@@ -22,7 +22,7 @@ Instruction들을 병렬적으로 처리하여 속도를 향상시키기 위함
 다음 Instruction이 다음 Clock Cycle에 실행될 수 없는 상황
 즉, 매 Cycle마다 Instruction을 실행해야 하는데, 그렇지 못하는 경우
 ~~~
-- Structure Hazards (Strutural)
+- Structure Hazards (Structural)
     - **정의**: 서로 다른 명령어들이 하드웨어 리소스를 동시에 사용하려고 할 때 구조적으로 생기는 문제
     - **예시**: 예를 들어 Load/Store 명령어가 메모리에 접근하는 동시에 Instruction Fetch를 하려 하는 다른 Instruction가 있어, 동시적으로 하드웨어에 접근하여 발생하는 지연 문제가 있음
     - **해결**: Instruction Memory와 Data Memory를 구조적으로 분리시켜야 하거나, Instruction과 Data Cache를 분리해야 함
@@ -141,7 +141,8 @@ $5의 값이 2번 명령어의 EX stage에 피연산자로 필요한데,
 🎯 Hazard 2) 두번째 Hazard로,
 2번 명령어와 4번 명령어 사이에 $3 때문에 Load-Use Data Hazard가 발생한다.
 $3의 값이 4번 명령어의 EX stage에 피연산자로 필요한데,
-2번 명령어의 $3의 값은 메모리에서 읽은(load) 값이므로 MEM/WB 레지스터로부터 Forwarding해서 가져와야 한다. 2번 명령어가 WB stage에 진입할 때, 4번 명령어는 EX stage에 진입하므로 Forwarding이 가능하다.
+2번 명령어의 $3의 값은 메모리에서 읽은(load) 값이므로 MEM/WB 레지스터로부터 Forwarding해서 가져와야 한다. 
+2번 명령어가 WB stage에 진입할 때, 4번 명령어는 EX stage에 진입하므로 Forwarding이 가능하다.
 
 🎯 Hazard 3) 세번째 Hazard로,
 4번 명령어와 5번 명령어 사이에 $3 때문에 RAW Data Dependency로 인한 Data Hazard가 발생한다.
@@ -194,7 +195,7 @@ bubble (Hazard : 4 - 5)
 5번 명령어 수행
 ~~~
 
-### 3. 다음은 Control Hazard에 대한 질문이다. '그림 1'에서 아래 코드가 수행된다고 하자. 맨 앞의 숫자는 그 명령어가 저장된 주소이다.
+### 3. 다음은 Control Hazard에 대한 질문이다. '그림 1'에서 아래 코드가 수행된다고 하자. 맨 앞의 숫자는 그 명령어가 저장된 주소이다. (SSU 17년도 기출)
 ![datapath_with_hazard_detection](../image_files/datapath_with_hazard_detection.png)  
 그림 1. data hazard를 해결하기 위해 forwarding unit과 hazard detection unit이 추가된 회로도
 
@@ -205,8 +206,55 @@ bubble (Hazard : 4 - 5)
 42: and $6,  $2,  $7      ...(4)
 46: add $14, $2,  $2      ...(5)
 ...
-58: sw  $2, 4($3)         ...(6)
+54: sw  $2, 4($3)         ...(6)
 ~~~
 
 #### 3.1. 30번지 beq 명령어에서 조건이 만족되어 branch 해야하는 상황을 그 명령어의 어느 수행단계에서 알게 되는가? 답을 쓰고 이유를 구체적으로 설명하시오. branch가 발생하는 경우 flushing해야 하는 명령어가 몇 개인지 위의 코드에서 구체적으로 밝히시오. Timing chart와 같은 그림을 그려서 발생하는 상황을 구체적으로 설명하시오.
 
+~~~
+✅ beq 조건부 명령어에서 $1과 $3이 같다는 것을 알게 되는 것은 EX stage이지만,
+✅ 분기할 최종 주소를 계산하여 알게되는 것은 MEM stage이다.
+✅ 이 MEM stage 다음 clock cycle에서 분기할 주소의 명령어를 가져온다.
+분기할 최종 주소는 (30 + 4) + (5 * 4), 54번지인 6번 명령어이다.
+🎯 아래의 Timing chart를 참고하면 3개의 명령어가 Flush되어 버려진다.
+~~~
+🎯 **Timing chart**:  
+| PC        | CC1 | CC2 | CC3 | CC4 | CC5            | CC6 | CC7 | CC8 | CC9 |
+|-----------|-----|-----|-----|-----|----------------|-----|-----|-----|-----|
+| 30 (beq)  | IF  | ID  | EX  | MEM | WB             |     |     |     |     |
+| 34 (or)   |     | IF  | ID  | EX  | ❌**Flushed** | -   |     |     |     |
+| 38 (add)  |     |     | IF  | ID  | ❌**Flushed** | -   | -   |     |     |
+| 42 (and)  |     |     |     | IF  | ❌**Flushed** | -   | -   | -   |     |
+| **58 (sw)** |   |     |     |     | IF             | ID  | EX  | MEM | WB  |
+
+**beq 명령어의 실행 과정을 정리하자면**,  
+`beq $1, $3, offset` 명령어는 `$1`과 `$3`의 값이 같은 경우, `offset × 4` 바이트 만큼 이동하여 분기하는 명령어임
+* EX (Execute) 단계에서:
+    * 두 레지스터 값($1, $3)을 비교하여 조건이 만족하는지 결정함.
+    * 즉, 분기 여부(branch taken or not taken)는 EX 단계에서 결정됨.
+* MEM (Memory) 단계에서:
+    * PC 값을 업데이트하고, 실제로 분기할 최종 주소를 결정.
+    * 분기가 확정되면 파이프라인을 Flush하고, 새로운 명령어를 가져오기 시작.
+
+#### 3.2. 아래 '그림 2'는 '그림 1'과 비교할 때 회로가 추가되었다. 어떤 부분에 어떤 기능이 추가됐는지와 이 회로가 추가된 목적을 설명하시오. (위에 쓰인 명령어는 무시)
+![control_hazards_reducing_branch_delay_datapath_1](../image_files/control_hazards_reducing_branch_delay_datapath_1.png)
+그림 2. 변경된 회로도
+
+~~~
+✅ branch할 주소를 계산하는 요소(adder)를 ID stage에서 가능하도록 옮겼다.
+✅ 주소가 같은지 비교하는 요소(comparator)를 ID stage에서 가능하도록 옮겼다.
+✅ IF.flush Control Signal이 추가되었다.
+✅ 즉, 변경하기 전인 '그림 1'에서는 '3.1.' 문제에서 봤듯이 분기 여부는 EX stage에서 수행되고, 분기할 최종 주소를 결정하는 것은 MEM Stage에서 수행된다.
+
+🎯 '그림 2'에서는 주소 계산을 ID stage에서 가능하게 하여 branch할 주소를 미리 ID stage에서 결정하게 됨으로써 flush 개수를 줄일 수 있다. ID stage에서 branch할 주소가 결정되기 때문에 ID stage 다음 Clock Cycle에서 branch할 주소의 명령어가 수행된다.
+🎯 즉, 이 회로가 추가된 목적은 flush 개수를 줄여 지연(delay)를 줄이기 위함이다.
+~~~
+
+#### 3.3. '그림 2' 회로에서 위의 코드를 수행한다고 할 때 수행과정을 Timing chart와 같은 표를 그려서 발생하는 상황을 구체적으로 설명하시오. branch가 발생하는 경우 Flushing 해야 하는 명령어가 몇 개인지 위의 코드에서 구체적으로 밝히시오.
+🎯 아래의 Timing chart를 참고하면 1개의 명령어가 Flush되어 버려진다.  
+🎯 **Timing chart**:  
+| PC        | CC1 | CC2 | CC3           | CC4 | CC5 | CC6 | CC7 |
+|-----------|-----|-----|---------------|-----|-----|-----|-----|
+| 30 (beq)  | IF  | ID  | EX            | MEM | WB  |     |     |
+| 34 (or)   |     | IF  | ❌**Flushed** | -   | -   | -   |     |
+| 58 (sw)   |     |     | IF            | ID  | EX  | MEM  | WB |
