@@ -173,8 +173,8 @@ add $1, **$1**, $4  -> 위의 어느 것을 Forwarding으로 가져올까?
 
 ## 9. Load-Use Data Hazard
 * 바로 전에 살펴봤던 Dependency 문제는 RAW였음
-* 즉, 바로 전 Instruction에서 연산한 결과를 바로 가져오는 Forwarding을 해결할 수 있는 문제
-* **이제 살펴볼 문제는 메모리를 읽어야만 얻을 수 있는 값이라 Forwarding으로는 해결할 수 없는 문제**
+* 즉, 바로 전에 살펴봤던 것은 Instruction에서 연산한 결과를 바로 가져오는 Forwarding만으로는 해결할 수 있는 문제였으나
+* **이제 살펴볼 문제는 메모리를 읽어야만 얻을 수 있는 값이라 Forwarding만으로는 해결할 수 없을 수 있음**
 
 이전에 Forwarding으로 줄여도 Stall을 완전히 없앨 수는 없어서 Code Scheduling 했던 부분 상기하기  
 Code Scheduling: 코드의 순서를 바꾸어 Stall 발생하는 코드는 미루고, 미리 해둘 작업을 우선적으로 수행하는 방법임  
