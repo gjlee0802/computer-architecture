@@ -60,14 +60,14 @@ sw  $15, 100($3)    ...(5)
 ~~~
 #### 1.1. 위 코드 수행과정에서 발생하는 hazard를 설명하시오.
 ~~~
-data hazard가 발생한다. 
+🎯 1번 명령어와 2번 명령어 사이에 $3으로 인한 Data hazard가 발생한다. 
 (2)를 수행함에 있어서 EX 단계(ALU)에서 $3에 해당하는 값이 필요한데, 
 add 명령어의 결과로 얻어지는 데이터이기 때문에 
-Read After Write 데이터 의존성으로 인해 hazard가 발생한다.
+RAW(Read After Write) 데이터 의존성으로 인해 hazard가 발생한다.
 ~~~
 #### 1.2. 위에서 발생한 hazard를 Forwarding 방법만으로 해결하려고 한다. 가능한지 여부를 답하시오. (1) Yes라면, Forwarding 과정을 구체적으로 설명하시오. (2) No라면, 그 이유를 설명하고 추가적으로 해결하는 방법을 설명하시오.
 ~~~
-Yes, Forwarding 방법만으로 해결할 수 있다.
+🎯 Yes, Forwarding 방법만으로 해결할 수 있다.
 ~~~
 * (2)번 명령어의 경우, 
     * `$3`이 **EX 단계에서 필요**하므로, (1)번 명령어가 MEM 단계에 있을 때 **EX/MEM 레지스터의 값을 포워딩**하여 해결함
@@ -78,7 +78,8 @@ Yes, Forwarding 방법만으로 해결할 수 있다.
 #### 1.3. 위에서 발생한 hazard를 stall 방법(bubble 추가)만으로 해결하려 한다. 위 코드를 모두 수행하기 위해 bubble이 총 몇 개 필요한지 설명하시오.
 
 ~~~
-2개 필요하다. (2)번 명령어가 ID 단계에서 $3의 값을 읽으려면,
+🎯 2개 필요하다. 
+(2)번 명령어가 ID 단계에서 $3의 값을 읽으려면,
 (1)번 명령어의 WB 단계에서 쓰기가 끝난 후 읽어야하는데, 
 2번의 Stall로 미뤄져야 가능하기 때문이다.
 ~~~
@@ -92,7 +93,7 @@ sub $14, $3, $2     ...(4)
 sw  $15, 100($3)    ...(5)
 ~~~
 ~~~
-(2)와 (4) 사이에 Load-use hazard가 생긴다. 
+🎯 (2)와 (4) 사이에 Load-use hazard가 생긴다. 
 (4)번 명령어는 $2의 값을 EX 단계에 피연산자로 사용해야 하는데, 
 (4)번 명령어가 EX 단계에 들어섰을 때, 
 (2)번 명령어는 WB 단계에 들어섰을 것이다.
@@ -102,19 +103,19 @@ $2의 값을 얻을 수 없다.
 
 #### 1.5. 새로 생긴 hazard를 Forwarding 방법 만으로 해결하려 한다. 가능한지 여부를 답하시오. (1) Yes라면, Forwarding 과정을 구체적으로 설명하시오. (2) No라면, 그 이유를 설명하고 추가로 해결하는 방법을 설명하시오
 ~~~
-Yes, Forwarding 방법만으로 해결 가능하다.
+🎯 Yes, Forwarding 방법만으로 해결 가능하다.
 이 문제는 RAW의 데이터 의존성에 의한 것이다.
 (4)번 명령어가 EX 단계에 들어선 시점에,
 (2)번 명령어는 MEM 단계를 수행하여 $2의 값을 메모리로부터 읽은 상태이다.
 이때, $2의 값이 존재하는 상태이며, MEM/WB 레지스터에서 포워딩오면 해결이 가능하다.
 ~~~
 
-* **이 문제에서 알 수 있는 Point**: Load-use hazard라고 해서 Forwarding으로 해결하지 못하는 것이 아님! 
+* ✅ **이 문제에서 알 수 있는 Point**: Load-use hazard라고 해서 Forwarding으로 해결하지 못하는 것이 아님! 
     * Load-use hazard인데, 값이 존재하지 않는 경우가 Forwarding이 아닌, Code scheduling을 고려해야하는 것임
 
 #### 1.6. 위에서 추가로 발생한 hazard를 stall 방법만으로 해력하려고 한다. bubble이 총 몇 개 필요한지 설명하시오.
 ~~~
-bubble은 1개 필요하다. 
+🎯 bubble은 1개 필요하다. 
 한번의 Stall이면 (4)번 명령에서 $2의 값이 필요한 시점(EX 단계)에,
 (2)번 명령의 WB 단계를 마칠 수 있기 때문이다.
 ~~~
@@ -130,3 +131,82 @@ lw  $2, 0($2)       ...(3)
 or  $3, $5, $3      ...(4)
 sw  $3, 0($5)       ...(5)
 ~~~
+~~~
+🎯 Hazard 1) 첫번째 Hazard로,
+1번 명령어와 2번 명령어 사이에 $5 때문에 RAW Data Dependency로 인한 Data Hazard가 발생한다.
+$5의 값이 2번 명령어의 EX stage에 피연산자로 필요한데,
+1번 명령어의 $5의 값은 연산을 거쳐 EX stage를 마쳤을 때의 결과 값이므로 EX/MEM 레지스터로부터 Forwarding해서 가져와야 한다.
+2번 명령어가 EX stage에 진입할 때, 1번 명령어는 MEM stage에 진입하므로 Forwarding이 가능하다.
+
+🎯 Hazard 2) 두번째 Hazard로,
+2번 명령어와 4번 명령어 사이에 $3 때문에 Load-Use Data Hazard가 발생한다.
+$3의 값이 4번 명령어의 EX stage에 피연산자로 필요한데,
+2번 명령어의 $3의 값은 메모리에서 읽은(load) 값이므로 MEM/WB 레지스터로부터 Forwarding해서 가져와야 한다. 2번 명령어가 WB stage에 진입할 때, 4번 명령어는 EX stage에 진입하므로 Forwarding이 가능하다.
+
+🎯 Hazard 3) 세번째 Hazard로,
+4번 명령어와 5번 명령어 사이에 $3 때문에 RAW Data Dependency로 인한 Data Hazard가 발생한다.
+RAW Hazard는 "이전 명령어에서 값을 계산하여 갱신하는데, 다음 명령어에서 이를 사용해야 할 때" 발생하는 것이다. 
+즉, 4번 명령어에서 $3을 새롭게 할당하는데, 5번 명령어에서 $3을 저장하려고 하므로,
+5번 명령어가 4번 명령어의 결과를 정확하게 반영하려면 forwarding (data forwarding)이나 stall이 필요하다.
+~~~
+
+#### 2.2. '그림 1'에서 forwarding unit은 있지만, 만일 hazard detection unit이 없다면 위 코드를 문제없이 실행할 수 있는지 여부를 Yes/No로 대답하고 그 이유를 구체적으로 설명하시오.
+~~~
+🎯 Yes, Forwarding Unit만으로 정상적으로 실행 가능하며, Hazard Detection Unit이 없어도 문제되지 않는다.
+
+✅ Forwarding Unit은 EX 단계에서 발생한 연산 결과를 바로 다음 명령어에 전달하여 RAW (Read After Write) Hazard를 방지하는 역할을 한다.
+✅ 하지만 Load-Use Hazard의 경우 Forwarding만으로는 해결되지 않고 Stall이 필요할 수 있다.
+✅ 이 코드에서는 3번 명령어(lw $2, 0($2))가 자연스럽게 Stalling 역할을 수행하여, 추가적인 Stall 없이 Forwarding만으로 해결 가능하다.
+~~~
+| 조건 | Forwarding Unit만으로 실행 가능 여부 | 이유 |
+|------|------------------------|------|
+| **3번 명령어가 없는 경우** (2번 → 4번 바로 실행) | ❌ **Stalling이 필요함** | Forwarding만으로 해결되지 않으므로 Hazard Detection Unit이 필요 |
+| **3번 명령어가 있는 경우** (2번 → 3번 → 4번 실행) | ✅ **문제없이 실행 가능** | 3번 명령어가 자연스럽게 Stalling 역할을 수행하여 Forwarding만으로 해결 가능 |
+
+#### 2.3. '그림 1'에서 forwarding unit은 없고 hazard detection unit만 가지고 위 코드를 수행하려고 한다. hazard detection unit에 어떤 입력과 출력 신호가 새로 필요한지를 설명하시오. 왜 이런 신호들이 필요한지 예를 들어 설명하시오.
+~~~
+✅ Forwarding Unit에서는 EX stage에서 Hazard를 감지 했는데, Hazard Detection Unit에서 Hazard를 검출하기 위해서 ID stage에서 비교해야 하는 것이 핵심이다!!
+
+✅ Forwarding Unit은 EX stage에서 ID/EX.registerRs, ID/EX.registerRt 피연산자 정보, 직전(1 Cycle 전) 명령어의 목적지 레지스터 EX/MEM.registerRd, 2 Cycle 전 명령어의 MEM/WB.registerRd 목적지 레지스터를 비교하여 Hazard 검출될 때 "Forwarding"을 하는 역할이다.
+
+🎯 유사하게, Hazard Detection Unit의 경우에는 기존의 EX stage에서 검출하기 위해 사용한 정보 대신에, ID stage에서 IF/ID.registerRs, IF/ID.registerRt, ID/EX.registerRd, EX/MEM.registerRd 를 비교하여 Hazard를 검출한다.
+그러나, Hazard Detection Unit만으로 Forwarding은 수행하지 않으며, Stall만 추가할 수 있다.
+~~~
+
+#### 2.4. 위 '2.3.' 문제의 회로를 갖고 위 코드를 전부 수행하려고 한다. 첫 사이클부터 종료될 때까지 사이클별로 Stalling을 포함하여 명령어 수행 순서를 정리하여 설명하시오. 
+~~~
+✅ Hazard Detection Unit만 있는데, Stalling만 가능하다.
+각각의 Hazard에 대해 몇번의 bubble이 필요한지 생각해보면 된다.
+위의 Hazard1을 해결하려면 2개의 bubble이 필요하다.
+위의 Hazard2를 해결하려면 1개의 bubble이 필요하다.
+위의 Hazard3를 해결하려면 2개의 bubble이 필요하다.
+
+🎯 이를 감안하여 명령어 수행 순서를 정리하자면,
+1번 명령어 수행
+bubble (Hazard : 1 - 2)
+bubble (Hazard : 1 - 2)
+2번 명령어 수행
+3번 명령어 수행
+bubble (Hazard : 2 - 4)
+4번 명령어 수행
+bubble (Hazard : 4 - 5)
+bubble (Hazard : 4 - 5)
+5번 명령어 수행
+~~~
+
+### 3. 다음은 Control Hazard에 대한 질문이다. '그림 1'에서 아래 코드가 수행된다고 하자. 맨 앞의 숫자는 그 명령어가 저장된 주소이다.
+![datapath_with_hazard_detection](../image_files/datapath_with_hazard_detection.png)  
+그림 1. data hazard를 해결하기 위해 forwarding unit과 hazard detection unit이 추가된 회로도
+
+~~~
+30: beq $1,  $3,  5       ...(1)
+34: or  $8,  $5,  $2      ...(2)
+38: add $9,  $3,  $4      ...(3)
+42: and $6,  $2,  $7      ...(4)
+46: add $14, $2,  $2      ...(5)
+...
+58: sw  $2, 4($3)         ...(6)
+~~~
+
+#### 3.1. 30번지 beq 명령어에서 조건이 만족되어 branch 해야하는 상황을 그 명령어의 어느 수행단계에서 알게 되는가? 답을 쓰고 이유를 구체적으로 설명하시오. branch가 발생하는 경우 flushing해야 하는 명령어가 몇 개인지 위의 코드에서 구체적으로 밝히시오. Timing chart와 같은 그림을 그려서 발생하는 상황을 구체적으로 설명하시오.
+
