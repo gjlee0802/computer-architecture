@@ -15,7 +15,7 @@
     * target address adder (대상 주소를 `PC+4+Offset(address*4) 해주던 ALU` 및 `Left shift`, `Sign extend`)
     * register comparator (ALU로 비교해서(빼서) zero인지 봤던)
 
-* 예시: branch
+* 예시: branch  
 36: sub $10, $4, $8  
 40: **beq** $1,  $3,  **7**  
 44: and $12, $2, $5  
