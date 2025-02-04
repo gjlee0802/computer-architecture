@@ -39,5 +39,28 @@
 * 위의 EPC, Cause Register 등에 저장 후에는
     * 미리 정해진(8000 00180) 메모리 주소에 위치한 handler로 jump하는데,
     * 여기서 EPC와 Cause Register의 값 등을 이용하여 처리하게 됨
-    
-## 3. An Alternate Mechanism
+
+## 3. An Alternate Mechanism - 다른 방식(좀 더 발전된 방식) 알아보기
+* Vectored Interrupts
+    * 원인에 따른 handler 주소가 다르게 정해져 있음
+    * 즉, 미리 정해진 메모리 주소의 handler로 jump하는 것이 아니라, 각각의 원인에 handler 주소가 정해짐
+    * 예시:
+        * undefined opcode:　C000 0000
+        * overflow:　　　　　 C000 0020
+        * ...:　　　　　　　 　 C000 0040
+* 문제가 발생한 Instruction은 다음 중 하나로 진행됨
+    * (드물게) 문제가 발생했을 때, 예외(또는 인터럽트) 핸들러가 즉시 문제를 해결하는 경우
+        * 그러나, 대부분의 경우에는 발생한 문제를 해결하려면 더 복잡한 처리가 필요함
+    * 처음 실행된 핸들러가 "**이 문제를 제대로 해결할 수 있는 Real Handler**"로 이동(jump)해서 처리하는 경우
+
+## 4. Handler Actions
+* 원인을 읽고, 관련된 handler로 이동(jump)
+* handler는 필요한 동작을 결정함
+* 만약, **해당 명령어를 재시작** 가능하다면
+    * 적절한 동작으로 시정하여 동작시킴
+    * **EPC를 이용하여 원래 실행 중이던 명령어(원래의 PC)로 돌아갈 수 있도록 함**
+* 그렇지 않다면
+    * 프로그램을 중단(terminate)
+    * EPC, cause, ... 등을 이용하여 error를 보고(report error)
+
+## 5. Exceptions in a Pipeline
