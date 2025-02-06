@@ -64,3 +64,48 @@
     * EPC, cause, ... 등을 이용하여 error를 보고(report error)
 
 ## 5. Exceptions in a Pipeline
+* Control Hazard의 또 다른 형태
+    * Control Hazard는 프로그램의 flow가 바뀔지도 몰라 직후 명령어가 바로 실행될 수 없는 hazard를 말함
+    * Exception도 발생하면, 다음의 명령어들이 실행되지 못하고 Exception을 처리해야 함
+* 아래 add 명령어의 EX Stage에서 Overflow가 발생했다고 생각해봤을 때, Exception 처리 과정은 아래와 같음
+    ~~~
+    add $1, $2, $1
+    ~~~
+    * `$1`에 잘못된 값이 쓰여지는 것을 막음
+    * 이전 Instruction들은 제대로 완수될 수 있도록 함
+    * add 명령어와 이후 명령어들을 비움 (Flush)
+    * **EPC와 Cause Register의 값 세팅**
+    * **handler로** 제어권을 넘김 (handler가 처리할 수 있도록 jump)
+* 예측 실패한 branch와 유사함!
+    * **프로그램 흐름(Control Flow)이 변경됨**
+        * 분기 예측 실패
+            * 예측된 분기 방향에서 잘못된 예측임을 깨닫게 되면 올바른 분기 방향으로 되돌아감
+            * 명령어를 취소(Flush)하고 올바른 명령어를 실행
+        * Exception
+            * Exception이 발생하면 이후 명령어를 실행할 수 없음
+            * 이후 명령어들을 취소(Flush)하고, Exception Handler로 jump
+    * **파이프라인에서 명령어를 취소(Flush)하는 과정이 동일**
+    * **동일한 HW 자원을 사용**
+        * branch 예측 실패와 예외 발생 모두, 현재 실행 중인 명령어의 실행을 멈추고 새로운 PC(주소)를 설정해야 함
+            * 이를 위해 EPC와 같은 레지스터를 사용하여 새로운 명령어 실행을 준비
+
+## 6. Pipeline with Exceptions
+![pipeline_with_exceptions](./image_files/pipeline_with_exceptions.png)
+* 추가된 부분을 주목할 것  
+    * Flush 관련 Control 신호: ID.Flush, EX.Flush
+    * EPC와 Cause Register
+* 추가된 장치 외에도, 기존의 장치를 많은 부분 함께 활용하여 exception을 처리  
+
+## 7. Exception Properties(특성)
+* 재실행 가능한 명령어에 대한 Exception 처리 과정
+    * Pipeline은 명령어를 비움 (Flush)
+    * Handler가 처리 후, 원래의 instruction으로 돌아감
+    * 이번엔 시정된 instruction을 실행함
+* EPC 레지스터에 PC가 저장됨
+    * 문제가 발생한 instruction을 식별가능
+    * 실제론 PC+4가 저장될 것
+    * Handler가 반드시 조정해야 함(-4를 PC에 넣어줘야 해당 instruction으로 돌아감)
+
+
+## 8. Exception 예제
+TODO
