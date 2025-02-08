@@ -47,7 +47,27 @@ Branch Prediction은 Control Hazards를 위한 분기 결과를 예측함으로�
 초대형(Stage가 아주 많은) Pipeline일수록, branch 패널티(stall)은 중요해짐(커짐)
 이런 경우를 대비하여 Dynamic Branch Prediction을 활용하는 것이 적절함
 ~~~
+### Exceptions
+#### 1. Exception의 정의는?
+~~~
+CPU 내부에서 발생한, 예기치 못한 상황
+~~~
+#### 2. Exceptions 과 Interrupts의 차이는 무엇인가?
+~~~
+Exception(예외)은 CPU 내부(프로그램 내부)에서 발생하지만,
+Interrupt(인터럽트)은 외부 장치나 OS로부터 발생함
+~~~
+* Exception(예외)은 **CPU 내부(프로그램 내부)에서** 발생
+    * e.g., undefined opcode, overflow, syscall, ...
+* Interrupt(인터럽트)은 **외부 I/O Controller(CPU 외부의 장치, OS 등...)로부터** 발생
 
+#### 3. Exception 처리 과정을 설명하시오.
+~~~
+예측 실패한 branch의 처리와 유사함
+1. Exception이 발생한 Instruction과 이후에 수행 중이던 Instruction들은 Flush하고,
+2. EPC와 Cause Register의 값을 세팅하여 Exception이 발생한 주소, 발생 원인을 저장하고,
+3. handler 명령어로 jump하여 handler가 처리하도록 함
+~~~
 
 ## Pipeline Hazards 심층 문제
 ### 1. 5단계의 Pipeline에서 아래의 코드가 수행된다고 하자. (SSU 19년도 기출)
