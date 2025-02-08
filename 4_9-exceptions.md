@@ -9,7 +9,7 @@
 * Exception(예외)은 CPU 내부에서 발생
     * e.g., undefined opcode, overflow, syscall, ...
 
-* Interrupt(중단)은 외부 I/O Controller(CPU 외부의 장치, OS 등...)로부터 발생
+* Interrupt(인터럽트)는 외부 I/O Controller(CPU 외부의 장치, OS 등...)로부터 발생
 
 * Exception vs. Interrupt
     | 구분 | 예외 (Exception) | 인터럽트 (Interrupt) |
@@ -108,4 +108,76 @@
 
 
 ## 8. Exception 예제
-TODO
+아래의 예시에서 **add 명령어에서 exception 발생**했다고 가정  
+  
+40  sub $11, $2, $4  
+44  and $12, $2, $5  
+48  or  $13, $2, $6  
+**4C  add $1, $2, $1**  
+50  slt $15, $6, $7  
+54  lw  $16, 50($7)  
+...  
+  
+이를 처리하는 **handler**는 아래와 같다고 가정  
+  
+Handler  
+8000 0180   sw $25, 1000($0)  
+8000 0184   sw $26, 1004($0)  
+...  
+  
+### EX stage에서 exception 발생
+현재 instruction(add)과 이후 instruction들 모두 flush  
+![exception_example_1](./image_files/exception_example_1.png)  
+
+### nop으로 flush(bubble), 그리고 handler로 jump
+수행 중이던 instruction들은 flush 되며, IF stage에 handler 명령어 수행됨
+![exception_example_2](./image_files/exception_example_2.png)  
+  
+## 9. Multiple Exceptions
+* Pipeline은 여러 명령어를 동시에 수행
+    * 그러므로 동시에 여러 exception이 발생할 수도 있음
+* 간단한 접근법: 더 일찍인(가장 진척도가 높은, 가장 후의 stage에서 수행 중인) instruction의 예외부터 처리
+* 뒤이어 오던 instruction들은 함께 Flush
+* Multiple Exceptions을 처리할 때, 가장 먼저 실행된(진척도가 가장 높은) 명령어의 예외부터 처리하면, **Precise Exception의 원칙을 유지**할 수 있음
+    * 즉, "Precise Exception"을 유지하기 위한 방법으로 더 앞선 명령어의 예외를 먼저 처리하고, 뒤따르는 명령어들을 flush하는 방식이 제안된 것
+        * ✅ 앞선 명령어까지는 정상적으로 완료됨
+        * ✅ 예외가 발생한 시점에서 모든 이후 명령어는 사라짐
+        * ✅ 즉, Precise Exception의 원칙을 만족함
+* 복잡한(complex) pipeline에서는
+    * Cycle마다 여러 명령어를 실행할 수 있음
+    * 명령어의 결과 순서가 실행 순서와 같지 않음(out-of-order)
+    * 규칙(명령어 순서대로, Precise exception 원칙)을 지키기가 어려움
+### "Precise" Exception이란?
+* Precise Exception은 예외가 발생했을 때 프로그램이 정확하게 정의된 상태(consistent state) 를 유지하도록 하는 개념
+* 이를 만족하려면:
+    * 예외가 발생하기 전까지의 명령어들은 모두 정상적으로 커밋(완료)되어야 함
+    * 예외가 발생한 명령어 이후의 모든 명령어들은 수행되지 않은 상태여야 함 (즉, flush 처리)
+
+## 10. Imprecise Exceptions
+### Imprecise Exception이란? 
+* 예외가 발생했을 때 CPU의 상태가 정확하게 정리되지 않는 경우를 말함
+* 즉, 어떤 명령어가 실행되었고, 어떤 명령어가 실행되지 않았는지 명확하지 않을 수 있는 상태가 되는 것을 말함
+
+### Precise Exception vs. Imprecise Exception 비교
+| **구분**             | **Precise Exception** | **Imprecise Exception** |
+|---------------------|------------------|------------------|
+| **정확한 상태 유지** | ✅ 유지됨 (예외 발생 이전의 상태만 남음) | ❌ 불명확 (예외 발생 후 일부 명령어가 실행되었을 수도 있음) |
+| **파이프라인 처리**  | 예외 발생한 명령어 이전까지 실행, 이후는 모두 flush | 파이프라인을 멈추고, 현재 상태 그대로 저장 |
+| **복구 방식**        | 간단 (예외 발생 직후 상태가 일관됨) | 복잡 (소프트웨어가 분석 후 처리 필요) |
+| **사용 가능 환경**   | Out-of-Order 실행에서도 가능 | 단순한 In-Order CPU에서만 가능 |
+
+### Imprecise 처리 방식
+1. **CPU가 실행을 멈추고, 현재 상태를 저장**
+    * 실행 중이던 모든 명령어의 진행 상황과 예외 원인을 저장
+2. **소프트웨어 핸들러(handler)가 개입하여 예외 처리**
+    * 어느 명령어(하나 혹은 여러 개)가 예외를 발생시켰는지 파악
+    * 어떤 명령어를 실행 완료해야 할지(Manual Completion), 어떤 명령어를 무효화(Flush)할지 결정
+3. **하드웨어는 단순화되지만, 소프트웨어 핸들러가 복잡해짐**
+    * 예외 발생 시 하드웨어가 즉시 처리하지 않고, 예외 정보를 저장한 후 소프트웨어적으로 분석 및 처리
+    * 장점: 하드웨어 설계를 단순화할 수 있음
+    * 단점: 소프트웨어 핸들러의 부담 증가, 복구 과정이 복잡해질 수 있음
+4. **Out-of-Order 실행을 지원하는 최신 CPU에서는 사용이 어려움**
+    * 최신 CPU는 명령어가 순서대로 실행되지 않음(Out-of-Order Execution)
+    * 따라서 예외 발생 시 어떤 명령어가 완료되었고, 어떤 명령어가 완료되지 않았는지 알기 어려움
+    * 즉, Imprecise Exception을 적용하면 CPU 상태가 불확실해지는 문제가 발생 → **최신 CPU에서는 사용 불가능**
+
