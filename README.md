@@ -20,9 +20,9 @@
 * [4.9 Exceptions](./4_9-exceptions.md)
 * 4.10 Paralleslim via Instructions
 ### Chapter 5. Large and Fast : Exploiting Memory Hierarchy
-* 5.1 Introduction
+* [5.1 Introduction](./5_1-introduction.md)
 * 5.2 Memory Technologies
-* 5.3 The Basics of Caches
+* [5.3 The Basics of Caches](./5_3-the-basics-of-caches.md)
 * 5.4 Measuring and Improving Cache Performance
 * 5.7 Virtual Memory
 * 5.8 A Common Framework for Memory Hierarchy
