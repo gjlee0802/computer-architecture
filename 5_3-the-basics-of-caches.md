@@ -83,25 +83,28 @@
 ~~~
 
 * Block Number: 메인 메모리에서 블록 단위로 데이터를 나누었을 때, 각 블록이 가지는 고유한 번호
+
+![example_block_size](./image_files/example_block_size.png)
+
 * **메인메모리의 주소가 1200인 block**은 어떤 block number에 mapping되는가?
     * 16 byte를 위해, **최하위 4비트를 Offset으로 사용**
         * 즉, 주소 중 최하위 4자리는 캐시 저장에 무시
     * right shift 4로써, 2의 4승인 16으로 나누면,
         * block address = **1200 / 16** = 75
-    * 64개(2^6)의 block이니, 그 위 6비트를 index로 사용
-        * 유의미한 75를 block의 수로 나머지 연산을 하면,
-            * block number = 75 % 64 = 11
+    * 64개(2^6)의 block이니, 그 위 **6비트를 index로 사용**
+        * 유의미한 **75를 block의 수로 나머지 연산**을 하면,
+            * **block number = 75 % 64 = 11**
     * 나머지 22비트를 tag로 사용
 
 ## 8. Multiword Block Direct Mapped Cache: 캐시의 블록에 여러 word 저장
 * 16 words/block. cache size = 4K words
 
-* 16 words = 16*4 bytes = 2의 6승 bytes, 즉 최하위 6비트를 Offset으로 사용
+* 16 words = 16*4 bytes = 2의 6승 bytes, 즉 **최하위 6비트를 Offset으로 사용**
     * word 단위로 access하므로, 이 중 word offset은 최하위 2비트(0~1자리)
     * 그 위 4비트(2~5자리)가 block offset
 * 캐시 사이즈는 4K words = 2^12 words = 2^(4+8) words
     * 즉, 2^8의 block이니, 블록 수는 256개
-    * offset의 상위 8비트(6~13자리)는 Index로 사용
+    * **Offset의 상위 8비트(6~13자리)는 Index로 사용**
 * 나머지 최상위 18비트는 Tag로 사용
 * 한 block에 16개의 word가 담기지만, CPU가 access하는 것은 1 word
     * 즉, MUX를 사용하며, 여기에 block offset을 통해 블록의 몇 번째 word에 access할지 결정
