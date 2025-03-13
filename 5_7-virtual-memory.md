@@ -1,4 +1,4 @@
-# 5.5. Virtual Memory
+# 5.7. Virtual Memory
 이제 캐시(SRAM)이 아닌, 메인메모리(DRAM)을 캐시처럼 사용하는 것에 대해 다룰 것임
 
 ## 1. Virtual Memory 개념
