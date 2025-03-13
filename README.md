@@ -24,7 +24,7 @@
 * 5.2 Memory Technologies
 * [5.3 The Basics of Caches](./5_3-the-basics-of-caches.md)
 * [5.4 Measuring and Improving Cache Performance](./5_4-measuring-and-improving-cache-performance.md)
-* 5.7 Virtual Memory
+* [5.7 Virtual Memory](./5_7-virtual-memory.md)
 * 5.8 A Common Framework for Memory Hierarchy
 
 
