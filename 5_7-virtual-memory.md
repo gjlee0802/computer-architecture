@@ -28,9 +28,9 @@
     * Virtual memory (0~31, 총 32비트)는 2^32 = 4 * 2^30 = 4GB
         * Page offset인 12비트를 제외하면, **20비트** => **Virtual Page Number**
     * Physical memory (0~29, 총 30비트)는 2^30 = 1GB
-        * Page offset인 12비트를 제외하면, **18비트** => **Physical Page Number**
+        * Page offset인 12비트를 제외하면, **18비트** => **Physical Frame Number**
     * 4GB인 Virtual address 공간이 1GB인 Physical address 공간으로 번역되어야 함
-        * 즉, 2^20인 Virtual Page Number을 2^18인 Physical Page Number로 번역해야 함
+        * 즉, 2^20인 Virtual Page Number을 2^18인 Physical Frame Number로 번역해야 함
 
 ## 3. Virtual Addressing with a Cache
 * **CPU에서 사용하는 Virtual address 와 Cache에서 사용하는 Physical address 사이에 Translation 과정이 필요**
@@ -57,15 +57,18 @@
     * Smart Replace Algorithms
         * 즉, OS에서 정교한 알고리즘 사용
 
-## Page Tables
+## 5. Page Tables
 * Page Table은 Placement(Translation) 정보를 갖고 있음
     * **PTE(Page Table Entry)들이 배열로** 되어 있음
     * **Virtual Page Number로 색인화(Index) 되어 있음**
     * CPU의 **Page Table 레지스터가 Physical Memory에 있는 Page Table을 가리킴**
 
-* **Page가 메인메모리에 있다면**,
-    * PTE(Page Table Entry)가 **Physical Page Number을 갖고 있음**
+* **Page가 메인메모리에 있다면 (valid == 1)**,
+    * PTE(Page Table Entry)가 **Physical Frame Number을 갖고 있음**
     * 그 외 다른 **상태 정보들도 비트로 가짐** (referenced, dirty, ...)
-
-* **Page가 메인메모리에 없다면**,
-    * PTE(Page Table Entry)는 **Disk에 있는 Swap Space의 장소를 가리키게 됨**
+    * valid가 1이라면 메인메모리를 가리킴
+    ![page_in_memory](./image_files/page_in_memory.png)
+* **Page가 메인메모리에 없다면 (valid == 0)**,
+    * PTE(Page Table Entry)는 **Disk에 있는 Swap Space의 정보를 가리키게 됨**
+    * valid가 0이라면 disk의 swap space 정보를 가리킴
+    ![page_in_swapspace](./image_files/page_in_swapspace.png)
