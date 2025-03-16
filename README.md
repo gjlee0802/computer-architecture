@@ -29,4 +29,5 @@
 
 
 ## 부가 자료
-[대학원 면접 대비: The Processor](./interview_questions/4-the-processor.md)
+* [대학원 면접 대비: The Processor](./interview_questions/4-the-processor.md)  
+* [대학원 면접 대비: Large and Fast: Exploiting Memory Hierarchy](./interview_questions/5-exploiting-memory-hierarchy.md)  
