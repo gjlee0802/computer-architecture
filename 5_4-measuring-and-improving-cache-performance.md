@@ -245,15 +245,8 @@ Block address sequence: `0, 8, 0, 6, 8`
     ~~~
 
 (3) Effective CPI 계산
-* **Primary miss with L-2 hit CPI**: (L1 Miss 후 L2 Hit 비율) x (L1 Miss 후 L2 Hit penalty)
-    * Penalty miss with L-2 hit rate = (전체 L1 Miss 비율) - (전체 메모리 Miss 비율)
-        * = 0.02 - 0.005 = 0.015
-    * L2 Hit penalty = 20 cycles (앞서 구함)
-    * (Penalty miss with L-2 hit rate) x (L2 Hit penalty) = 0.015 x 20 = 0.3
-* **Primary miss with L-2 miss CPI**: (메모리 Miss 비율) x (메모리 Miss penalty)
-    * 0.005 x 400 = 2
 * 따라서 총 CPI(Effective CPI)는...
-    * CPI = 1 + (**Primary miss with L-2 hit CPI**) + (**Primary miss with L-2 miss CPI**) = 1 + 0.3 + 2 = 3.4
+    * CPI = 1 + (**Primary miss with L-2 hit CPI**) + (**Primary miss with L-2 miss CPI**) = 1 + 0.02 x 20 + 0.005 x 400 = 3.4
 
 🎯 Penalty 계산 Point
 ~~~
