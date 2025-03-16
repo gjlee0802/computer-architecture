@@ -90,16 +90,16 @@
     * TLB라 불리는 PTE(Page Table Entry)를 위한 빠른 cache를 CPU에 두고 사용함
     * Miss는 HW와 SW에 의해 처리됨
 ### 7.1. TLB Misses
-* 만약 page가 메모리에 있다면,
+* **Case 1: 만약 page가 메모리에 있다면,**
     * Page Table로부터 PTE를 받아서 다시 시도
     * HW에서 처리할 수도 있음
         * 그러려면 Page Table 구조와 HW 구조가 더 복잡해짐
     * SW에서 처리한다면, 
-        * 특별한 Exception을 발생시키고, 최적화된 Handler로 처리함
-* 만약 page가 메모리에 없다면 (page fault),
+        * 특별한 Exception을 발생시키고, 최적화된 Handler로 처리함 (TLB Miss Handler)
+* **Case 2: 만약 page가 메모리에 없다면 (page fault),**
     * OS가 처리하며, disk로부터 page를 fetch하고 Page Table을 업데이트
         * Step 1: Page Fault 감지 (Valid Bit가 0임을 확인)
-        * Step 2: OS가 Page Fault를 처리
+        * Step 2: OS가 Page Fault를 처리 (Page Fault Handler)
         * Step 3: Page Table 업데이트
             ~~~
             디스크에서 해당 page를 RAM으로 로드
@@ -120,33 +120,78 @@
     * 만약 page가 실제로 없다면(Case 2), page fault 발생 => Page Fault Handler를 통해 처리
 
 ### 7.3. Page Fault Handler
-* Step 1: Page Fault 감지
+* **Step 1: Page Fault 감지**
     * 프로세스가 Virtual Address에 접근하려고 했는데, 해당 페이지가 Page Table에 없음
     * 즉, Valid Bit == 0이라 메모리에 없는 상태
     * CPU는 Page Fault Exception을 발생시켜 OS에 제어권 넘김
 
-* Step 2: 디스크(Swap Space)에서 페이지 찾기
+* **Step 2: 디스크(Swap Space)에서 페이지 찾기**
     * OS는 disk의 Swap Space에서 해당 페이지를 찾음
     * 만약 해당 page가 존재하지 않으면, 프로세스가 잘못된 메모리 접근한 것
         * Segmentation Fault 발생
 
-* Step 3: 교체할 Page 선택 (Page Replacement)
+* **Step 3: 교체할 Page 선택 (Page Replacement)**
     * 만약 메모리에 빈 공간이 없다면, 기존 페이지중 하나를 내보내고(Swap Out) 새로운 페이지를 로드(Swap In)해야 함
     * 이때, 교체할 페이지를 결정하는 알고리즘이 필요(e.g., LRU)
     * Dirty Bit는 해당 page가 수정되었는지 나타냄
         * Dirty Bit == 0: 수정되지 않음, 바로 overwrite 가능
         * Dirty Bit == 1: 수정됨, 기존 내용을 disk에 먼저 저장한 후 overwrite
 
-* Step 4: 새 페이지를 메모리로 가져와 Page Table 업데이트
+* **Step 4: 새 페이지를 메모리로 가져와 Page Table 업데이트**
     * 선택된 page를 메모리에 load한 후, Page Table을 업데이트
     * Page Table에서:
         * 해당 Virtual Address를 새롭게 할당된 Physical Address에 매핑
         * Valid Bit는 1로 설정
         * 새로운 PFN (Physical Frame Number) 저장
 
-* Step 5: 실패한 명령어 재실행
+* **Step 5: 실패한 명령어 재실행**
     * 이전에 Page Fault가 발생했지만, 이번에는 Page Table이 올바르게 설정되어 정상 실행됨
 
 ### 7.4. TLB - Cache Interaction
+![tlb-cache_interaction](./image_files/tlb-cache_interaction.png)  
+* **PIPT**: 이전에 배운대로 **Physical Address를 Cache Tag로 사용**한다면?
+    * **CPU는** 메모리를 접근할 때 **가상 주소(Virtual Address, VA)를 사용**
+    * 하지만 cache는 **물리적 메모리 주소(Physical Address, PA)를 기반으로 작동**하는 경우가 많음
+    * 그렇다면, **VA => PA 변환이 필요하며, TLB를 거쳐야 cache 탐색(lookup) 가능**
+    * 즉, cache lookup 전에 TLB에서 주소 변환이 먼저 필요함 => Bottleneck 성능 저하로 이어짐
+* **VIVT**: 다른 방식으로, **Virtual Address를 Cache Tag로 사용**하면?
+    * VA를 그대로 Cache Tag로 사용하면 **TLB 변환 없이 곧바로 cache lookup 가능**
+    * 즉, TLB가 Critical path 바깥에 있을 수 있음 => 더 빨라짐
+    * 하지만 **Aliasing(동일한 PA를 여러 VA가 가리키는) 문제**가 존재
+* **VIPT**: **Virtually Indexed, Physically Tagged** 기법
+    * VIPT(Virtually Indexed, Physically Tagged): 위의 Aliasing 문제를 해결하는 기법 중 하나
+    * Virtually Indexed: **가상 주소의 일부를 cache index로 사용**해 빠르게 접근 가능
+    * Physically Tagged: **실제 PA를 기반으로 cache tag를 저장**해 일관성을 유지
+    * 즉, **VA를 사용하여 빠르게 접근하고, 물리 주소를 확인해 같은 데이터가 여러 번 캐싱되는 것(Aliasing)을 방지**
+#### 정리하자면,
+| 기법 | 장점 | 단점 |
+|------|------|------|
+| **Physically Indexed, Physically Tagged (PIPT)** | 일관성 보장됨 | TLB 변환이 필요해 느림 |
+| **Virtually Indexed, Virtually Tagged (VIVT)** | TLB 없이 캐시 접근 가능해 빠름 | Aliasing 문제 발생 |
+| **Virtually Indexed, Physically Tagged (VIPT)** | 빠르면서도 일관성 유지 가능 | 인덱스 설계 신경 써야 함 |
+**즉, VIPT 방식이 빠르면서도 일관성 유지가 가능하므로 많이 쓰인다!**
 
 ## 8. Memory Protection
+* 각 **프로세스는 각자 다른 고유의 Virtual Address Space를 사용**함
+    * 하지만 특정 경우, 같은 영역 일부 공유할 수 있음
+    * 다른 프로세스가 잘못 접근하면 보호할 필요가 있음 
+        * => OS의 도움으로 보호
+* HW는 OS Protection을 지원함
+    * Kernel Mode / User Mode 
+        * => Kernel Mode는 모든 메모리 및 IO 장치 접근 가능
+    * Privileged Instructions(특권 명령들) 
+        * => Kernel Mode에서만 실행 가능 (e.g., load/store 명령으로 Page Table 수정)
+    * Page Table과 기타 정보들은 오직 Kernel Mode에서 접근 가능 
+        * => Page Table은 OS가 관리
+    * System Call Exception
+        * 사용자 프로세스가 Privileged Instruction(특권 명령)을 실행하려 하면, Exception 발생
+* OS의 **Context Switch 시** 중요 변화: **Page Table 변경 및 TLB Flush**
+    1. 새로운 프로세스의 Page Table 로드
+        * 각 프로세스는 고유한 가상 주소 공간(Virtual Address Space)을 가지므로, 전환 시 Page Table을 새로 설정
+    2. TLB Flush 필요
+        * TLB는 최근의 가상 주소 => 물리 주소 매핑을 저장하는 cache 역할
+        * 하지만 새로운 프로세스로 전환하면 기존 프로세스의 주소 매핑이 더 이상 유효하지 않음
+        * TLB를 비우고(Flush) 새 프로세스의 새로운 페이지 매핑을 저장해야 함
+    3. Adding task identifiers (태스크 식별자 추가)
+        * Task ID를 추가하여 프로세스별로 캐시된 주소 변환을 구분 가능
+        * 불필요한 TLB Flush를 줄일 수 있음
