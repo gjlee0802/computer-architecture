@@ -181,6 +181,8 @@ $2의 값을 얻을 수 없다.
 (2)번 명령의 WB 단계를 마칠 수 있기 때문이다.
 ~~~
 
+-----
+
 ### 2. '그림 1'은 5단계 pipeline에서 data hazard를 해결하기 위해 forwarding unit과 hazard detection unit이 추가된 회로도이다. (SSU 17년도 기출)
 ![datapath_with_hazard_detection](../image_files/datapath_with_hazard_detection.png)  
 그림 1. data hazard를 해결하기 위해 forwarding unit과 hazard detection unit이 추가된 회로도
@@ -256,6 +258,8 @@ bubble (Hazard : 4 - 5)
 5번 명령어 수행
 ~~~
 
+-----
+
 ### 3. 다음은 Control Hazard에 대한 질문이다. '그림 1'에서 아래 코드가 수행된다고 하자. 맨 앞의 숫자는 그 명령어가 저장된 주소이다. (SSU 17년도 기출)
 ![datapath_with_hazard_detection](../image_files/datapath_with_hazard_detection.png)  
 그림 1. data hazard를 해결하기 위해 forwarding unit과 hazard detection unit이 추가된 회로도
@@ -319,3 +323,97 @@ bubble (Hazard : 4 - 5)
 | 30 (beq)  | IF  | ID  | EX            | MEM | WB  |     |     |
 | 34 (or)   |     | IF  | ❌**Flushed** | -   | -   | -   |     |
 | 58 (sw)   |     |     | IF            | ID  | EX  | MEM  | WB |
+
+## Branch Prediction 심층 문제
+
+### 1. 다음 C 프로그램은 중첩 루프로 구성되어 있다. Outer Loop는 10번 반복되고, Inner Loop는 20번 반복된다:   (POSTECH 24-25 Second)
+~~~
+for (i = 0; i < 10; i++) {
+    for (j = 0; j < 20; j++) {
+        // do something;
+    }
+}
+~~~
+#### 1.1. 각 루프의 끝에 분기 명령어가 하나씩 존재하고, 그 외에는 코드에 다른 분기 명령어가 없다고 가정할 때, 다음 분기 예측기(branch predictor)들의 정확도를 비교하고, 주어진 프로그램의 실행 동작과 관련지어 그 이유를 설명하시오.
+~~~
+(1) Static predictor (always predicts “taken”)
+(2) One-bit predictor
+(3) Two-bit predictor using a saturating counter
+~~~
+
+✅ Taken과 Not Taken의 개념:
+| 용어        | 뜻                                | 실행 흐름       |
+|-------------|-----------------------------------|------------------|
+| **Taken**   | 분기가 실행되어 **점프함**         | 루프 반복 계속    |
+| **Not Taken** | 분기가 실행되지 않고 **직진함**     | 루프 종료, if문 통과 등 |
+
+✅ Inner Loop와 Outer Loop의 Taken/Not Taken 횟수 분석:
+* Inner Loop:
+    * 한번의 Outer Loop당 20번 반복되어, 20개의 분기 발생
+    * 실제 분기 결과: 19번 Taken + 1번 Not Taken
+    * Outer Loop가 10번 반복되므로, 190번 Taken + 10번 Not Taken
+* Outer Loop:
+    * 9번 Taken + 1번 Not Taken
+
+1️⃣ **Static Predictor** - 항상 Taken으로 예측
+* Taken일 때는 맞고, Not Taken일 때는 틀림
+* Inner Loop의 정확도: `190/200` = 95%
+* Outer Loop의 정확도: `9/10` = 90%
+* 🎯 전체 평균 정확도: `199/210` = 94.7%
+
+2️⃣ **One-bit Predictor** - 최근 분기 결과 하나만 기억
+* Loop의 마지막 Not Taken이 발생한 후, 다음 Loop의 첫 분기를 잘못 예측
+* Outer Loop에 의해 다음 Inner Loop가 10번 반복될 때마다, 2번 연속으로 틀림
+    ~~~
+    i=0, j=0    Taken
+    i=0, j=1    Taken
+    ...
+    i=0, j=19   Taken
+    i=0, j=20   Not Taken(루프탈출) -> 틀림
+    i=1, j=0    Taken -> 틀림
+    ~~~
+* Inner Loop는 10번 반복되므로, 10 x 2 = 20 번 틀림
+* Inner Loop의 정확도: `180/200` = 90%
+* Outer Loop의 정확도: `8/10` = 80%
+* 🎯 전체 평균 정확도: `188/210` = 89.6%
+
+3️⃣ **Two-bit Predictor** - 예측 상태를 4단계(Strong/Weak Taken, Strong/Weak Not Taken)로 기억
+* 한 번 틀린다고 예측이 바뀌지 않음
+* Static Predictor처럼 Loop 탈출하는 Not Taken에서 1번씩 틀림
+* Inner Loop의 정확도: `190/200` = 95%
+* Outer Loop의 정확도: `9/10` = 90%
+* 🎯 전체 평균 정확도: `199/210` = 94.7%
+
+-----
+
+### 2. 다음과 같은 branch 연산의 결과가 주어졌다면, 기본적인 two-bit saturating counter를 이용한 branch predictor를 사용할 때 예측 결과의 정확도를 구하시오. 이때, counter는 2’b10으로 초기화되었고 2’b00은 strongly not-taken, 2’b11은 strongly taken을 의미한다. (POSTECH 24-25 First)
+~~~
+Branch 연산 결과: T, T, T, N, N, N, T, T, T, N, N
+~~~
+
+✅ 2-bit Saturating Counter Predictor의 상태표:
+| 상태 값 | 상태 이름         | 예측       | 실제 결과: Taken → 다음 상태 | 실제 결과: Not Taken → 다음 상태 |
+|----------|------------------|------------|------------------------------|----------------------------------|
+| 11       | Strong Taken     | Taken      | 유지 (11)                    | → Weak Taken (10)               |
+| 10       | Weak Taken       | Taken      | → Strong Taken (11)          | → Weak Not Taken (01)           |
+| 01       | Weak Not Taken   | Not Taken  | → Weak Taken (10)            | → Strong Not Taken (00)         |
+| 00       | Strong Not Taken | Not Taken  | → Weak Not Taken (01)        | 유지 (00)                       |
+
+
+처음에 초기화되었을 때: `10` (Weak Taken)
+
+| 순서 | 실제 결과 | 현재 상태        | 다음 상태           | 예측 성공 여부        |
+|------|------------|------------------|----------------------|-----------------|
+| 1    | T          | Weak Taken (10)  | Strong Taken (11)   | ✅ 성공          |
+| 2    | T          | Strong Taken (11)| Strong Taken (11)   | ✅ 성공          |
+| 3    | T          | Strong Taken (11)| Strong Taken (11)   | ✅ 성공          |
+| 4    | N          | Strong Taken (11)| Weak Taken (10)     | ❌ 실패          |
+| 5    | N          | Weak Taken (10)  | Weak Not Taken (01) | ❌ 실패          |
+| 6    | N          | Weak Not Taken(01)| Strong Not Taken (00)| ✅ 성공        |
+| 7    | T          | Strong Not Taken(00)| Weak Not Taken (01)| ❌ 실패        |
+| 8    | T          | Weak Not Taken(01)| Weak Taken (10)     | ❌ 실패         |
+| 9    | T          | Weak Taken (10)  | Strong Taken (11)   | ✅ 성공          |
+|10    | N          | Strong Taken (11)| Weak Taken (10)     | ❌ 실패          |
+|11    | N          | Weak Taken (10)  | Weak Not Taken (01) | ❌ 실패          |
+
+따라서, 예측 결과의 정확도는 `5/11` = 약 45.4%
