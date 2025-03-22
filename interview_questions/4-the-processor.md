@@ -324,6 +324,54 @@ bubble (Hazard : 4 - 5)
 | 34 (or)   |     | IF  | ❌**Flushed** | -   | -   | -   |     |
 | 58 (sw)   |     |     | IF            | ID  | EX  | MEM  | WB |
 
+-----
+
+### 4. 다음 코드는 5단계 파이프라인 구조의 RISC-V CPU에서 실행된다. 분기 예측 방식은 정적(Static) 방식이며, 항상 "분기 안 함(Not Taken)"으로 예측한다고 가정한다. 즉, 분기 명령이 나오면 항상 다음 PC = PC + 4로 예측한다. 분기 결과는 EXE 단계(ALU에서)에 가서야 확인할 수 있다. (POSTECH 22-23 First)
+~~~
+    LW x9, 0x0(x8)
+    BEQ x9, x10, END    //It turns out the values of x9 and x10 differ
+    ADD x9, x9, x9
+END:ADD x10, x10, x10
+~~~
+
+#### 4.1. data forwarding이 전혀 구현되어 있지 않은 경우(즉, 레지스터 파일 내부 포워딩도 없음) 이 코드를 실행하는 데 몇 사이클이 소요되는가?
+~~~
+5 stage는 순서대로, IF -> ID -> EX -> MEM -> WB
+
+LW에서 x9의 값은 WB 단계를 거쳐야 얻어짐 (WB를 통해 메모리에 접근하여 읽은 값을 x9에 저장)
+그런데 BEQ는 ID 단계에서 x9의 값을 얻어야 함
+LW의 WB 단계 다음에 BEQ의 ID 단계가 수행되어야 하므로,
+아래와 같이 3번의 Bubble이 필요함
+ IF ID EX MEM WB (LW)
+    -  -  -   -  - (Bubble)
+       -  -   -  -  - (Bubble)
+          -   -  -  -   - (Bubble)
+              IF ID EX MEM WB (BEQ)
+                 IF ID EX  MEM WB (ADD)
+                    IF ID  EX  MEM WB (ADD)
+
+🎯 따라서, 11 cycles 소요
+~~~
+
+#### 4.2. 모든 가능한 데이터 포워딩이 구현된 경우, 이 코드를 실행하는 데 몇 사이클이 소요되는가?
+~~~
+BEQ의 EX 단계에서 비교가 이루어지므로, 
+forwarding을 도입할 경우에는 비교 연산 때 x9 값을 가져오면 됨!
+즉, ID에서는 x9 값으로 outdated 데이터를 읽어도 EX에서 forwarding을 통해 최신 값을 가져오는 것
+
+LW의 MEM 단계는 일찍 실행되어 결과를 forwarding 경로로 보낼 수 있고,
+BEQ의 EX 단계는 그 값을 받아서 바로 사용이 가능
+✅ MEM → EXE forwarding은 "같은 사이클 안에서" 가능함!
+
+ IF ID EX MEM WB (LW)
+    IF ID EX  MEM WB (BEQ)
+       IF ID  EX  MEM WB (ADD)
+          IF  ID  EX  MEM WB (ADD)
+
+🎯 띠라서, 8 cycles 소요 (마지막 ADD의 WB 단계까지)
+~~~
+
+
 ## Branch Prediction 심층 문제
 
 ### 1. 다음 C 프로그램은 중첩 루프로 구성되어 있다. Outer Loop는 10번 반복되고, Inner Loop는 20번 반복된다:   (POSTECH 24-25 Second)
@@ -416,4 +464,4 @@ Branch 연산 결과: T, T, T, N, N, N, T, T, T, N, N
 |10    | N          | Strong Taken (11)| Weak Taken (10)     | ❌ 실패          |
 |11    | N          | Weak Taken (10)  | Weak Not Taken (01) | ❌ 실패          |
 
-따라서, 예측 결과의 정확도는 `5/11` = 약 45.4%
+🎯 따라서, 예측 결과의 정확도는 `5/11` = 약 45.4%
