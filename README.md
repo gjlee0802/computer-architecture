@@ -8,6 +8,9 @@
     * [현록님의 Tistory](https://ydeer.tistory.com/143)
 
 ## 목차
+### Chapter 1. Computer Abstractions and Technology
+* [1.6 Performance](./1_6-performance.md)
+
 ### Chapter 4. The Processor
 * [4.1 Introduction](./4_1-introduction.md)
 * [4.2 Logic Design Conventions](./4_2-logic-design-conventions.md)
@@ -29,5 +32,6 @@
 
 
 ## 부가 자료
+* [대학원 면접 대비: Performance](./interview_questions/1-performance.md)
 * [대학원 면접 대비: The Processor](./interview_questions/4-the-processor.md)  
 * [대학원 면접 대비: Large and Fast: Exploiting Memory Hierarchy](./interview_questions/5-exploiting-memory-hierarchy.md)  

@@ -1,7 +1,7 @@
 # Performance
 
-## Amdahl's Law
-Speedup 계산식:  
+## 0. Amdahl's Law (암달의 법칙)
+**암달의 법칙 공식(Speedup 계산식)**:  
 ![amdahls_law](./image_files/amdahls_law.png)
 * p: 전체 실행 시간 중 개선되는 부분의 비율
 * s: 그 부분이 개선되는 배수 (개선되는 부분이 몇배 빨라졌는가?)
