@@ -39,17 +39,17 @@ CPU Clock Cycles
 
 #### 1.2. The FPU of the CPU is improved to execute FP instructions 2x faster. What is the overall speedup of this new CPU?
 ✅ **암달의 법칙에 따른 Speedup 공식**:  
-![amdahls_law](../image_files/amdahls_law.png)
+![amdahls_law](../image_files/amdahls_law.png)  
 * p: 전체 실행 시간 중 개선되는 부분의 비율
 * s: 그 부분이 개선되는 배수 (개선되는 부분이 몇배 빨라졌는가?)
 
-1️⃣ **Step 1. FP Instruction의 비율 구하기** (공식에서 `p` 변수)  
+1️⃣ **Step 1. FP Instruction의 비율 구하기** (공식에서 `p` 변수):  
 * 총 Instruction 수: `5 x 10^8`
 * FP Instruction 수: `3 x 10^8`
 * FP Instruction의 비율은 `3` / `5` = `0.6`, 
     * 개선되는 부분(p)은 전체의 60%를 차지함
 
-2️⃣ **Step 2. 암달의 법칙 공식 적용**  
+2️⃣ **Step 2. 암달의 법칙 공식 적용**:  
 * `s = 2`, `p = 0.6`을 공식에 대입하여 계산하면,
 * Speedup = 1 / (`(1-0.6)` + `(0.6 / 2)`) = 1 / (0.4 + 0.3) = 1.43
 
@@ -62,5 +62,19 @@ CPU Clock Cycles
 ### 2. Parallelizing an application gives a practical speedup as the number of cores is increased, but the realistic speedup is bounded by two limitations: the percentage of the application that can be parallelized and the cost of communication.
 
 #### 2.1. What is the speedup with N processors compared to a single processor if 90% of the application is parallelizable, ignoring the cost of communication?
+
+✅ **암달의 법칙에 따른 Speedup 공식**:  
+![amdahls_law](../image_files/amdahls_law.png)    
+1️⃣ **Step 1. 공식에 사용되는 s와 p의 값 정하기**:  
+* `s`: 
+    * N개의 프로세서를 사용하는 것 => N배 향상을 의미하므로
+    * `s = N`
+* `p`: 
+    * 병렬 가능한 비율이 90%인 것 => 성능 향상이 전체에서 90% 차지를 의미하므로
+    * `p = 0.9`
+
+2️⃣ **Step 2. 암달의 법칙 공식 적용**:  
+
+🎯 Speedup = 1 / (`0.1` + `0.9 / N`)
 
 #### 2.2. What is the speedup with 16 processors compared to a single processor if 80% of the application is parallelizable and, for every time the number of processors is doubled, the communication overhead is increased by 0.5% of the original execution time?
