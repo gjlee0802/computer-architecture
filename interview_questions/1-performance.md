@@ -78,3 +78,22 @@ CPU Clock Cycles
 🎯 Speedup = 1 / (`0.1` + `0.9 / N`)
 
 #### 2.2. What is the speedup with 16 processors compared to a single processor if 80% of the application is parallelizable and, for every time the number of processors is doubled, the communication overhead is increased by 0.5% of the original execution time?
+
+✅ **암달의 법칙에 따른 "Overhead까지 고려한" Speedup 공식**:  
+![amdahls_law_with_overhead](../image_files/amdahls_law_with_overhead.png)  
+
+1️⃣ Step 1. 암달의 법칙 (with Communication Overhead)  
+* `p = 0.8` (80% 병렬 가능)
+* `s = 16`
+* 오버헤드는 프로세서 개수가 두 배로 늘어날 때마다 +0.5% 추가
+    * 기준은 "original execution time" 기준
+
+2️⃣ Step 2. Overhead 계산
+* 16 = `2^4`: 
+    * 프로세서 개수가 두 배로 늘어나는 횟수: `4번`
+    * 따라서, `0.5%` x `4번` = `2%` 의 오버헤드 발생
+
+Step 3. 암달의 법칙에 Overhead 대입
+* Speedup = 1 / (`0.2` + `0.8 / 16` + `0.02`) = `3.7`
+
+🎯 따라서, Speedup = 3.7
