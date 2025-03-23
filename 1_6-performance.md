@@ -1,5 +1,11 @@
 # Performance
 
+## Amdahl's Law
+Speedup 계산식:  
+![amdahls_law](./image_files/amdahls_law.png)
+* p: 전체 실행 시간 중 개선되는 부분의 비율
+* s: 그 부분이 개선되는 배수 (개선되는 부분이 몇배 빨라졌는가?)
+
 ## 1. Response Time & Throughput (응답시간 & 처리량)
 * **Response Time** (응답시간):
     * 하나의 operation을 수행하는데 걸리는 시간
