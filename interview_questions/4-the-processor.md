@@ -1,7 +1,7 @@
 # 면접 기출 예시
 * 외부에서 수집한 자료, 본인이 임의로 만든 개념적인 질문을 포함함
 * 대학원 면접을 대비하기 위한 자료임
-* **서울대 컴퓨터공학부**는 2가지의 과목을 선택하여 면접을 보도록 되어있으며, 그림과 함께 심층적으로 묻는 문제가 출제되는 것으로 알고 있음 [심층 문제로 이동](https://github.com/gjlee0802/computer-architecture/blob/main/interview_questions/4-the-processor.md#pipeline-hazards-%EC%8B%AC%EC%B8%B5-%EB%AC%B8%EC%A0%9C)
+* **서울대 컴퓨터공학부** 및 **포항공대 컴퓨터공학과**는 2가지의 과목을 선택하여 면접을 보도록 되어있으며, 그림과 함께 심층적으로 묻는 문제가 출제되는 것으로 알고 있음 [심층 문제로 이동](https://github.com/gjlee0802/computer-architecture/blob/main/interview_questions/4-the-processor.md#pipeline-hazards-%EC%8B%AC%EC%B8%B5-%EB%AC%B8%EC%A0%9C)
 * **카이스트 전산학부**는 컴퓨터 구조 뿐만 아니라 모든 과목에서 전반적인 범위에 걸쳐 질문을 하며, 개념 질문들, 핵심 개념을 위주로 출제되는 것으로 알고 있음 [개념 질문으로 이동](https://github.com/gjlee0802/computer-architecture/blob/main/interview_questions/4-the-processor.md#%EA%B0%9C%EB%85%90-%EC%A7%88%EB%AC%B8)
 
 ## 개념 질문
