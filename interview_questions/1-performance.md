@@ -1,3 +1,14 @@
+## 개념 질문
+
+### 1. 암달의 법칙은 무엇인가? F(parallelizable)과 number of processor를 이용하여 표현하고 그 법칙의 의미를 설명하시오.
+* 암달의 법칙 Speedup 공식
+    * Speedup = 1 / (`(1-F)` + `F/number of processor`)
+~~~
+병렬화로 개선될 수 있는 부분과 개선되지 않는 부분으로 나뉘어,
+병렬화로 개선되는 부분만 성능 향상이 이루어지기 때문에
+전체적으로 보면 프로세서 숫자만큼 성능이 향상되지 않는다.
+~~~
+
 ## Performance 심층 문제 
 ### 1. A program has 500 million instructions in total and consists of 200 million integer (INT) instructions and 300 million floating-point (FP) instructions. The program takes 0.5 seconds to execute on a 2 GHz processor. Assume all instructions take the same amount of time to execute.
 
