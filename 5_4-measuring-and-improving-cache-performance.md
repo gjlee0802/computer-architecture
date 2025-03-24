@@ -184,6 +184,19 @@ Block address sequence: `0, 8, 0, 6, 8`
 * Associativity를 증가시킬수록 Miss rate는 낮아짐
     * 하지만 점차 효율(Associativity의 효과)은 낮아짐
 
+### 4.6. Direct Mapped, Set Associative, Fully Associative 비교 Table
+| 항목                     | **Direct Mapping**       | **Set Associative Mapping**    | **Fully Associative Mapping**   |
+|------------------------|---------------------------|-------------------------------|-------------------------------|
+| **Index Field**        | O (필수)                  | O (Set을 구분하는 용도)      | X (사용하지 않음)            |
+| **Tag Field**          | O                         | O                             | O                             |
+| **Set 수**             | 1개 블록 당 1개의 Set     | 다수의 Set                    | Set 1개 (전체가 하나의 Set)  |
+| **Block 당 위치 수**   | 1개 (하나의 블록에만 저장) | N개 (N-way)                   | 전체 Cache 중 아무 곳이나 가능 |
+| **매핑 방식**          | (Block 번호) mod (Cache 블록 수) | (Block 번호) mod (Set 수) | 아무 위치나 저장 가능       |
+| **검색 방식**          | Index로 위치 찾고 Tag 비교 | Set 내 병렬 비교             | 모든 Cache 라인 병렬 비교     |
+| **속도**               | 가장 빠름                 | 중간                          | 가장 느림 (하드웨어 비용 ↑)   |
+| **하드웨어 복잡도**   | 가장 낮음                 | 중간                          | 가장 높음                     |
+
+
 ## 5. Replacement Policy: 교체 정책
 * Direct mapped 캐시: no choice, 무조건 교체가 일어남
 * Set assiciative 캐시:
