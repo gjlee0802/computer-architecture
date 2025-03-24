@@ -90,6 +90,8 @@
     * TLB라 불리는 PTE(Page Table Entry)를 위한 빠른 cache를 CPU에 두고 사용함
     * Miss는 HW와 SW에 의해 처리됨
 ### 7.1. TLB Misses
+![page_table_and_tlb](./image_files/page_table_and_tlb.png)  
+
 * **Case 1: 만약 page가 메모리에 있다면,**
     * Page Table로부터 PTE를 받아서 다시 시도
     * HW에서 처리할 수도 있음
