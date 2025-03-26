@@ -110,7 +110,7 @@ Interrupt(인터럽트)은 외부 장치나 OS로부터 발생함
 3. handler 명령어로 jump하여 handler가 처리하도록 함
 ~~~
 
-## Pipeline Hazards 심층 문제
+## 💪 Pipeline Hazards 심층 문제
 ### 1. 5단계의 Pipeline에서 아래의 코드가 수행된다고 하자. (SSU 19년도 기출)
 ~~~
 add $3, $1, $2      ...(1)
@@ -375,7 +375,7 @@ BEQ의 EX 단계는 그 값을 받아서 바로 사용이 가능
 ~~~
 
 
-## Branch Prediction 심층 문제
+## 💪 Branch Prediction 심층 문제
 
 ### 1. 다음 C 프로그램은 중첩 루프로 구성되어 있다. Outer Loop는 10번 반복되고, Inner Loop는 20번 반복된다:   (POSTECH 24-25 Second)
 ~~~

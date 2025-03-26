@@ -9,7 +9,7 @@
 전체적으로 보면 프로세서 숫자만큼 성능이 향상되지 않는다.
 ~~~
 
-## Performance 심층 문제 
+## 💪 Performance 심층 문제 
 ### 1. A program has 500 million instructions in total and consists of 200 million integer (INT) instructions and 300 million floating-point (FP) instructions. The program takes 0.5 seconds to execute on a 2 GHz processor. Assume all instructions take the same amount of time to execute.
 
 위의 문제에서 주어진 정보를 정리하면,  
