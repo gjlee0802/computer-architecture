@@ -174,11 +174,17 @@ $2의 값을 얻을 수 없다.
 * ✅ **이 문제에서 알 수 있는 Point**: Load-use hazard라고 해서 Forwarding으로 해결하지 못하는 것이 아님! 
     * Load-use hazard인데, 값이 존재하지 않는 경우가 Forwarding이 아닌, Code scheduling을 고려해야하는 것임
 
-#### 1.6. 위에서 추가로 발생한 hazard를 stall 방법만으로 해력하려고 한다. bubble이 총 몇 개 필요한지 설명하시오.
+#### 1.6. 위에서 추가로 발생한 hazard를 stall 방법만으로 해결하려고 한다. bubble이 총 몇 개 필요한지 설명하시오.
 ~~~
-🎯 bubble은 1개 필요하다. 
-한번의 Stall이면 (4)번 명령에서 $2의 값이 필요한 시점(EX 단계)에,
+🎯 bubble은 2개 필요하다. 
+2개의 Bubble이면 (4)번 명령에서 $2의 값이 필요한 시점(ID 단계)에,
 (2)번 명령의 WB 단계를 마칠 수 있기 때문이다.
+
+(2) IF ID EX MEM WB
+(3)    IF ID EX  MEM WB
+(-)       -  -   -   -  -
+(-)          -   -   -  -  -
+(4)              IF  ID EX MEM WB
 ~~~
 
 -----
