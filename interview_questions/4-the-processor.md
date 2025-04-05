@@ -341,6 +341,8 @@ END:ADD x10, x10, x10
 ~~~
 5 stage는 순서대로, IF -> ID -> EX -> MEM -> WB
 
+LW에서 값을 가져와야 하는 Load-Use Data Hazard 발생임
+
 LW에서 x9의 값은 WB 단계를 거쳐야 얻어짐 (WB를 통해 메모리에 접근하여 읽은 값을 x9에 저장)
 그런데 BEQ는 ID 단계에서 x9의 값을 얻어야 함
 LW의 WB 단계 다음에 BEQ의 ID 단계가 수행되어야 하므로,
@@ -358,20 +360,23 @@ LW의 WB 단계 다음에 BEQ의 ID 단계가 수행되어야 하므로,
 
 #### 4.2. 모든 가능한 데이터 포워딩이 구현된 경우, 이 코드를 실행하는 데 몇 사이클이 소요되는가?
 ~~~
+Load-Use Data Hazard임
+
 BEQ의 EX 단계에서 비교가 이루어지므로, 
 forwarding을 도입할 경우에는 비교 연산 때 x9 값을 가져오면 됨!
 즉, ID에서는 x9 값으로 outdated 데이터를 읽어도 EX에서 forwarding을 통해 최신 값을 가져오는 것
 
-LW의 MEM 단계는 일찍 실행되어 결과를 forwarding 경로로 보낼 수 있고,
-BEQ의 EX 단계는 그 값을 받아서 바로 사용이 가능
-✅ MEM → EXE forwarding은 "같은 사이클 안에서" 가능함!
+Load-Use data hazard이므로, x9는 메모리에 접근해야만 얻을 수 있기에
+MEM 이후에 가져올 수 있음
+따라서 forwarding을 하더라도 한번의 stall이 발생
 
  IF ID EX MEM WB (LW)
-    IF ID EX  MEM WB (BEQ)
-       IF ID  EX  MEM WB (ADD)
+    -  -  -   -   -   - (Bubble)
+       IF ID  EX  MEM WB (BEQ)
           IF  ID  EX  MEM WB (ADD)
+              IF  ID  EX  MEM WB (ADD)
 
-🎯 띠라서, 8 cycles 소요 (마지막 ADD의 WB 단계까지)
+🎯 띠라서, 9 cycles 소요 (마지막 ADD의 WB 단계까지)
 ~~~
 
 
